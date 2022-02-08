@@ -4,6 +4,16 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 5: Passthrough basics
+
+Passthrough is how you let 11ty know to copy assets in the output folder. The feature is useful for static images and stylesheet files, included as-is.
+
+Update the eleventy config file to keep the images in `src/images`.
+
+```js
+config.addPassthroughCopy("./src/images/");
+```
+
 ## Lesson 4: Front matter basics
 
 Front matter is how you define variables in markdown documents. The syntax follows the YAML language including the variables with key value pairs in between `---` dashes.

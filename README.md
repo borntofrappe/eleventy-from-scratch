@@ -4,6 +4,34 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 6: Partials basics
+
+Partials are fragments in which to split the codebase.
+
+Create a folder for partial files in `_includes/partials`.
+
+Create a partial in `site-head.html` with a `<header>` wrapping around a company logo and basic navigation.
+
+Include the partial in any templating file, such as `base.html`.
+
+```html
+{% include "partials/site-head.html" %}
+```
+
+Partials are not constrained to `.html` documents. It is possible to include any other format such as `.svg` for a company logo.
+
+```html
+{% include "partials/brand.svg" %}
+```
+
+_Aside_:
+
+- the `.svg` logo has an `aria-hidden` and `focusable` attribute to improve accessibility. The graphic is treated as purely decorative
+
+- `base.html` injects the block content in a `<main>` container with a `tabindex` and `id` attribute. The landmark can be focused with an anchor link pointing to the identifier
+
+- the `<header>` element in the partial has a role of `banner` to improve accessibility
+
 ## Lesson 5: Passthrough basics
 
 Passthrough is how you let 11ty know to copy assets in the output folder. The feature is useful for static images and stylesheet files, included as-is.

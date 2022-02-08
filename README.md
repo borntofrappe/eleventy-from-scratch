@@ -4,6 +4,109 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 7: Data basics
+
+Eleventy works with a _global data system_.
+
+Create a folder in `_data`.
+
+Create a data file in `site.json`.
+
+```json
+{
+  "name": "Issue 33",
+  "url": "https://issue33.com"
+}
+```
+
+11ty makes the information available in any templating file.
+
+```html
+<a href="/" aria-label="{{ site.name }} - home"></a>
+```
+
+With a more complex structure create `navigation.json` with an array of items.
+
+```json
+{
+  "items": [
+    {
+      "text": "Home",
+      "url": "/"
+    }
+    // {...}
+  ]
+}
+```
+
+Loop through the structure with a `{% for %}` statement.
+
+```html
+{% for item in navigation.items %}
+<li>
+  <a href="{{item.url}}">{{item.text}}</a>
+</li>
+{% endfor %}
+```
+
+Data is not limited to JSON files. With JavaScript syntax export values such as helper functions.
+
+In `helpers.js` export an object with a `getLinkActiveState` function.
+
+```js
+module.exports = {
+  getLinkActiveState(itemUrl, pageUrl) {},
+};
+```
+
+For the specific function return a string with specific `aria-` and `data-` attribute if the url of the item matches the url of the page.
+
+Use the function directly in the markup.
+
+```html
+<a href="{{item.url}}" {{helpers.getLinkActiveState(item.url, page.url)}}> </a>
+```
+
+11ty provides `page` as global data.
+
+_Aside_: the `aria-current` attribute is set to `page` for the anchor link matching the current page to improve accessibility
+
+A call to action helps to reiterate the lessons included so far:
+
+- create a data file in `cta.json` with fields such as `title` and `summary`
+
+- create a partial in `cta.html` using the information set on a separate variable, `ctaPrefix`
+
+  ```html
+  <h2>{{ ctaPrefix.title }}</h2>
+  ```
+
+  The idea is to use `ctaPrefix` with the data from the JSON file _or_ the information passed through a separate variable.
+
+  ```html
+  {% set ctaPrefix = cta %} {% if ctaContent %} {% set ctaPrefix = ctaContent %}
+  {% endif %}
+  ```
+
+- use the partial in `home.html` in two instances, setting `ctaContent` to a separate variable and then to the data in the JSON object
+
+  ```html
+  {% set ctaContent = primaryCTA %} {% include "partials/cta.html" %}
+  <!--  -->
+  {% set ctaContent = cta %} {% include "partials/cta.html" %}
+  ```
+
+- in `index.md` define the `primaryCTA` variable
+
+  ```md
+  ---
+  <!-- ... -->
+  primaryCTA:
+    title: "This is an agency that doesn’t actually exist"
+    summary: "This is ..."
+  ---
+  ```
+
 ## Lesson 6: Partials basics
 
 Partials are fragments in which to split the codebase.

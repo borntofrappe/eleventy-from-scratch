@@ -4,6 +4,26 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 4: Front matter basics
+
+Front matter is how you define variables in markdown documents. The syntax follows the YAML language including the variables with key value pairs in between `---` dashes.
+
+Update `index.md` to include an `intro` with several fields such as `main` and `summary`.
+
+```md
+---
+intro:
+  main: "Bread & Butter"
+  summary: "..."
+---
+```
+
+Inject the values as if `intro` were an object.
+
+```html
+<p>{{ intro.summary }}</p>
+```
+
 ## Lesson 3: Nunjucks basics
 
 Nunjucks refers to a _templating language_ to create markup with logic — consider variables and loops.

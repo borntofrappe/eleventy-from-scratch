@@ -4,6 +4,24 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 10: Home page complete and recap
+
+Update the title in `index.md`.
+
+```html
+---
+title: "Issue 33"
+---
+```
+
+Wrap the content of the home layout in a `<div>` container.
+
+```html
+<div class="wrapper">
+  <!-- article -->
+</div>
+```
+
 ## Lesson 9: Adding remote data
 
 Using data from a remote source allows 11ty to function as a front-end for a content management system.

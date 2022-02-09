@@ -4,6 +4,86 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 8: Creating our first collection
+
+Collections work as groups of content. 11ty provides collections automatically, but it is possible to create your own.
+
+In the config file `.eleventy.js` add a collection before the `return` statement.
+
+```js
+config.addCollection("work", (collection) => {});
+```
+
+`addCollection` receives the name of the collection and a callback function which describes the collection itself.
+
+To retrieve a reference to the markdown files use the `getFilteredByGlob` method.
+
+```js
+return collection.getFilteredByGlob("./src/work/*.md");
+```
+
+The function returns an array which is sorted by `displayOrder` a value decribed in the front matter. The front matter is made available in a `data` property for each imported file.
+
+```js
+return collection
+  .getFilteredByGlob("./src/work/*.md")
+  .sort((a, b) =>
+    Number(a.data.displayOrder) > Number(b.data.displayOrder) ? 1 : -1
+  );
+```
+
+The collection is made available to templating languages through `collections`.
+
+```html
+<p>There are {{collections.work.length}} items in the work collection</p>
+```
+
+Create a separate collection for _featured_ work, filtering the markdown files through the `featured` key in the front matter.
+
+```js
+config.addCollection("featuredWork", (collection) => {
+  return (
+    collection
+      // get and sort
+      .filter((d) => d.data.featured)
+  );
+});
+```
+
+Since the two collections share the sorting by `displayOrder` create and export a utility function in `src/utils/sort-by-display-order.js`.
+
+```js
+module.exports = (collection) =>
+  collection.sort((a, b) =>
+    Number(a.data.displayOrder) > Number(b.data.displayOrder) ? 1 : -1
+  );
+```
+
+Import the function in the config file and use it for both collections.
+
+```js
+const sortByDisplayOrder = require("./src/utils/sort-by-display-order");
+
+// config
+return sortByDisplayOrder(collection.getFilteredByGlob("./src/work/*.md"));
+```
+
+To use the collection create a partial in `featured-work.html`.
+
+```html
+{% for item in collections.featuredWork %}
+<a href="{{ item.url }}">
+  <!--  -->
+</a>
+{% endfor %}
+```
+
+Include the partial in the home layout between the call to action partials.
+
+```html
+{% include "partials/featured-work.html" %}
+```
+
 ## Lesson 7: Data basics
 
 Eleventy works with a _global data system_.

@@ -4,10 +4,21 @@
 {% set pageHeaderSummary = content %}
 {% set postListItems = pagination.items %}
 
+{% if tag %} 
+  {% set postListItems = collections[tag] %} 
+  {% set pageHeaderTitle = 'Blog posts filed under “' + tag + '”' %}
+{% endif %}
+
 {% block content %}
-    {% include "partials/pagination.html" %} 
+  
   <article>
     {% include "partials/page-header.html" %} 
     {% include "partials/post-list.html" %}
+
+    {% if not tag %}
+      {% include "partials/pagination.html" %} 
+    {% endif %}
   </article>
+
+  {% include "partials/cta.html" %}
 {% endblock %}

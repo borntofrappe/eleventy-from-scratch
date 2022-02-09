@@ -143,6 +143,61 @@ In the `<span>` element inject the label from the chosen variable or a default v
 
 In the anchor link use the `href` provided in the pagination objct and the anchor defined in the front matter.
 
+Include the partial in the layout `feed.html`.
+
+```html
+{% include "partials/pagination.html" %}
+```
+
+### Tags
+
+The lesson creates pages to show articles matching a specific tag with a specific URL.
+
+```text
+tag/tutorial
+tag/design-thinking
+```
+
+Create `tags.md` with a series of variables.
+
+```md
+---
+title: "Tag Archive"
+layout: "layouts/feed.html"
+pagination:
+  data: collections
+  size: 1
+  alias: tag
+  filter: ["all", "nav", "blog", "work", "featuredWork", "people", "rss"]
+permalink: "/tag/{{ tag | slug }}/"
+---
+```
+
+For the pagination:
+
+- with `data` point to all the collections 11ty creates in `collections`
+
+- with `alias` consider a variety of tags, such as `tutorial` or again `design-thinking` — notice how the value is included in the permalink
+
+- with `filter` have 11ty skip certain collections
+
+With this setup when you create an article with a tag 11ty creates a collection for the specific tag and then a page for said collection.
+
+The tag page extends the feed layout. Update the logic to handle the generic pagination, for `blog.md`, and the one devoted to the tag, `tag.md`.
+
+With a tag reference a specific collection.
+
+```html
+{% if tag %} {% set postListItems = collections[tag] %} {% set pageHeaderTitle =
+'Blog posts filed under “' + tag + '”' %} {% endif %}
+```
+
+With a tag skip the pagination partial.
+
+```html
+{% if not tag %} {% include "partials/pagination.html" %} {% endif %}
+```
+
 ## Lesson 10: Home page complete and recap
 
 Update the title in `index.md`.

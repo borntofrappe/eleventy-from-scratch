@@ -17,6 +17,8 @@ primaryCTA:
     though. Take the course today!"
   buttonText: "Go to course"
   buttonUrl: "https://learneleventyfromscratch.com"
+studioFeed:
+  title: "From inside the studio"
 ---
 
 This is pretty _rad_, right?

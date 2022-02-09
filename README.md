@@ -4,6 +4,102 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 9: Adding remote data
+
+Using data from a remote source allows 11ty to function as a front-end for a content management system.
+
+The course provides data in the form of a JSON object with an array images following a specific URL: `https://11ty-from-scratch-content-feeds.piccalil.li/media.json`.
+
+Install `node-fetch` to fetch the data.
+
+_Aside_: at the time of writing installing the latest version of package raises an error. Install a `2.*.*` version to keep using the `require` keyword.
+
+```bash
+npm i node-fetch@2.6.7
+```
+
+In the `_data` folder create `studio.js` to retrieve the data with the `fetch` method.
+
+```js
+const fetch = require("node-fetch");
+```
+
+Similary to `helpers.js` export a function. In this instance export an async function which returns the collection from the provided URL.
+
+```js
+module.exports = async () => {
+  try {
+    const res = await fetch("...");
+    const { items } = await res.json();
+
+    return items;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+```
+
+In the catch block return an empty array as a fallback value.
+
+The data is available like the other files in the same folder.
+
+```html
+<p>There are {{ studio.length }} items in the remote collection</p>
+```
+
+With `node-fetch` and the `fetch` method the website requires the data and associated images with each request. The course introduces a separate library `@11ty/eleventy-cache-assets` to cache the data so that subsequent visits rely on information which is already available.
+
+Uninstall `node-fetch`.
+
+```bash
+npm uninstall node-fetch
+```
+
+Install the chosen library.
+
+```bash
+npm install @11ty/eleventy-cache-assets
+```
+
+Update `studio.js` so that the items are retrieved with the new module.
+
+```js
+const Cache = require("@11ty/eleventy-cache-assets");
+
+// try
+const { items } = await Cache(
+  "https://11ty-from-scratch-content-feeds.piccalil.li/media.json",
+  {
+    duration: "1d",
+    type: "json",
+  }
+);
+```
+
+Create a partial in `studio-feed.html` to loop through the images if available.
+
+```html
+{% if studio.length %}
+<!-- for item in studio -->
+{% endif %}
+```
+
+Include the partial in the home layout after the featured work.
+
+```html
+{% include "partials/studio-feed.html" %}
+```
+
+Update `index.md` to define a title for the studio feed article — the variable is used in the feed's partial.
+
+```md
+---
+studioFeed:
+  title: "From inside the studio"
+---
+```
+
 ## Lesson 8: Creating our first collection
 
 Collections work as groups of content. 11ty provides collections automatically, but it is possible to create your own.

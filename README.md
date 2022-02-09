@@ -4,6 +4,145 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 11: Blog feeds, tags and pagination
+
+The lesson produces a blog from articles in `src/posts`. Each article has a title, date and tags defined in the frontmatter.
+
+```md
+---
+title: "A Complete Guide to Wireframe Design"
+date: "2020-04-13"
+tags: ["Tutorial", "Learning"]
+---
+```
+
+_Aside_: technically tags includes the values in a JSON array, not a YAML array
+
+```yaml
+tags:
+  - "Tutorial"
+  - "Learning"
+```
+
+11ty processes either format.
+
+_Aside_: dates are in ISO format, but 11ty allows to specify alternative values, date strings, as well two keywords: `Last Modified` and `Created`. Without a value the date refers to when the file was first created.
+
+From this starting point, update the config file to create a blog collection.
+
+```js
+config.addCollection("blog", (collection) => {
+  return [...collection.getFilteredByGlob("./src/posts/*.md")].reverse();
+});
+```
+
+By default 11ty populates the array in chronological order. By reversing the array you position the most recent articles first. Spreading the array allows _not_ to mutate the collection in place.
+
+Create a layout file in `feed.html` which extends the base layout and shows the articles through a header and list.
+
+```html
+{% set pageHeaderTitle = title %} {% set pageHeaderSummary = content %} {% set
+postListItems = pagination.items %} {% block content %}
+<article>
+  {% include "partials/page-header.html" %} {% include "partials/post-list.html"
+  %}
+</article>
+{% endblock %}
+```
+
+Before the content the layout sets three variables which are then used in the two partials. `title`, `content` and `pagination` are made available from a markdown files created later.
+
+Create the partial `page-header.html` to show the title and optionally the summary.
+
+```html
+<h1>{{ pageHeaderTitle }}</h1>
+
+{% if pageHeaderSummary %}
+<div>{{ pageHeaderSummary | safe }}</div>
+{% endif %}
+```
+
+Create the partial `post-list.html` to optionally show a headline and the collection with a for loop.
+
+```html
+{% if postListHeadline %}
+<h2>{{ postListHeadline }}</h2>
+{% endif %}
+
+<ol>
+  {% for item in postListItems %}
+  <li>
+    <a href="{{ item.url }}">{{ item.data.title }}</a>
+  </li>
+  {% endfor %}
+</ol>
+```
+
+Create `blog.md` alonside the index file describing several variables in the front matter.
+
+```md
+---
+title: "The Issue 33 Blog"
+layout: "layouts/feed.html"
+pagination:
+  data: collections.blog
+  size: 5
+---
+
+The latest articles from around the studio, demonstrating our design thinking, strategy and expertise.
+```
+
+The feed layout receives the title from the front matter, the content from the text after the key value pairs and the pagination from `pagination`. The value has a special meaning in 11ty:
+
+- through `data` consider an array or a collection — in this instance the blog collection
+
+- through `size` create a collection of batches, each with a specific number of items
+
+The end result is that 11ty creates a `pagination.items` collection. This is the value the feed layout passes to the list partial.
+
+```html
+{% set postListItems = pagination.items %}
+```
+
+There are additional variables in the front matter which will become relevant at a later stage.
+
+```md
+---
+permalink: "blog{% if pagination.pageNumber > 0 %}/page/{{ pagination.pageNumber }}{% endif %}/index.html"
+paginationPrevText: "Newer posts"
+paginationNextText: "Older posts"
+paginationAnchor: "#post-list"
+---
+```
+
+`permalink` includes a value through Nunjucks syntax, creating a variety of URL values. `pageNumber` is an additional variable included by 11ty in the pagination collection.
+
+```text
+blog/index.html
+blog/page/1/index.html
+blog/page/2/index.html
+```
+
+Create a partial in `pagination.html` to link to show the different batches in the collection. Condition the markup to the presence of an anchor link pointing to the following or previous batch. 11ty adds `href` to the pagination object if necessary.
+
+```html
+{% if pagination.href.next or pagination.href.previous %} {/if}
+```
+
+For each link create an anchor link referencing the URL.
+
+```html
+{% if pagination.href.previous %}
+<a href="{{ pagination.href.previous }}{{ paginationAnchor }}">
+  <span>{{ paginationPrevText if paginationPrevText else 'Previous' }}</span>
+</a>
+{% endif %}
+```
+
+In the `<span>` element inject the label from the chosen variable or a default value with Nunjucks' ternary operator.
+
+In the anchor link use the `href` provided in the pagination objct and the anchor defined in the front matter.
+
 ## Lesson 10: Home page complete and recap
 
 Update the title in `index.md`.

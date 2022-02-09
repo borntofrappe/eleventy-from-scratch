@@ -15,6 +15,10 @@ module.exports = (config) => {
     );
   });
 
+  config.addCollection("blog", (collection) => {
+    return [...collection.getFilteredByGlob("./src/posts/*.md")].reverse();
+  });
+
   return {
     markdownTemplateEngine: "njk",
     dataTemplateEngine: "njk",

@@ -4,6 +4,60 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 13: Recommended content
+
+Create a section to show additional articles, recommended content past the current article.
+
+In `_data.helper.js` create and export a helper function which receives a collection, the current page as well as the number of articles and whether or not to pick the posts at random.
+
+```js
+getSiblingContent(collection, page, limit, random) {}
+```
+
+The `limit` is set by default to 3, while `random` is set by default to `true`.
+
+```js
+getSiblingContent(collection, page, limit = 3, random = true) {}
+```
+
+Based on this information create a collection of articles skipping the one displayed in the current page.
+
+```js
+let filteredItems = collection.filter((d) => d.url !== page.url);
+```
+
+If choosing the article at random loop through the array backwards swapping the current item with a value present earlier in the collection.
+
+With the possibly random array return the entire list or just the items described by the limit.
+
+```js
+return limit ? filteredItems.slice(0, limit) : filteredItems;
+```
+
+In the post layout `post.html` set a variable to refer to the accompanying articles.
+
+```html
+{% set recommendedPosts = helpers.getSiblingContent(collections.blog, page) %}
+```
+
+Use the variable to optionally show a footer and a list for the matching posts.
+
+```html
+{% if recommendedPosts %}
+<footer>
+  <!--  -->
+</footer>
+{% endif %}
+```
+
+Instead of creating a new list rely
+on the `post-list.html` partial through the different variables `postListItems` and `postListHeadline`.
+
+```html
+{% set postListItems = recommendedPosts %} {% set postListHeadline = "More from
+the blog" %} {% include "partials/post-list.html" %}
+```
+
 ## Lesson 12: Blog post view, directory data and filters
 
 The lesson creates the page devoted individual blog posts.

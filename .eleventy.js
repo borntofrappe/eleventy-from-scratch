@@ -21,6 +21,12 @@ module.exports = (config) => {
     return [...collection.getFilteredByGlob("./src/posts/*.md")].reverse();
   });
 
+  config.addCollection("people", (collection) => {
+    return collection
+      .getFilteredByGlob("./src/people/*.md")
+      .sort((a, b) => (Number(a.fileSlug) > Number(b.fileSlug) ? 1 : -1));
+  });
+
   config.addFilter("dateFilter", dateFilter);
   config.addFilter("w3DateFilter", w3DateFilter);
 

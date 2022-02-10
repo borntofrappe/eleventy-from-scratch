@@ -4,6 +4,71 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 14: Adding our about page
+
+Create a new layout file in `about.html`. With this file extend the base layout, set a specific title, summary.
+
+```html
+{% set pageHeaderTitle = title %} {% set pageHeaderSummary = content %}
+
+<!-- block content -->
+{% include "partials/page-header.html" %}
+```
+
+Moreover, set a variable for a collection to show through a dedicated partial `people.html`.
+
+```html
+{% set peopleItems = collections.people %}
+
+<!-- block content -->
+{% if peopleItems %} {% include "partials/people.html" %} {% endif %}
+```
+
+Create the partial `people.html` to show the collection with an ordered list and one image for each person.
+
+```html
+<ol>
+  {% for item in peopleItems %}
+  <!-- list item -->
+  {% endfor %}
+</ol>
+```
+
+To populate the page and the partial create a `people` collection in the config file.
+
+```js
+config.addCollection("people", (collection) => {
+  return collection.getFilteredByGlob("./src/people/.md");
+});
+```
+
+The lesson sorts the person by `fileSlug`, meaning 11ty considers the alphabetical order of the files without extension..
+
+```js
+return collection
+  .getFilteredByGlob("./src/people/.md")
+  .sort((a, b) => (Number(a.fileSlug) > Number(b.fileSlug) ? 1 : -1));
+```
+
+Finally create the actual page `about.html` describing the title, layout and content.
+
+```md
+---
+title: "About Issue 33"
+layout: "layouts/about.html"
+---
+
+Wanna see...
+```
+
+With the permalink describe a specific URL instead of the default `/about/index.html`
+
+```md
+---
+permalink: "/about-us/index.html"
+---
+```
+
 ## Lesson 13: Recommended content
 
 Create a section to show additional articles, recommended content past the current article.

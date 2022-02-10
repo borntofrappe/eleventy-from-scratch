@@ -4,6 +4,87 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 12: Blog post view, directory data and filters
+
+The lesson creates the page devoted individual blog posts.
+
+Create a layout in `post.html` to render the content of the markdown files.
+
+```html
+{% block content %}
+<article>
+  {% include "partials/page-header.html" %}
+
+  <div>{{ content | safe }}</div>
+</article>
+{% endblock %}
+```
+
+In the block include content and the header's partial. For the header define `pageHeaderTitle` with the upcoming markdown file's title.
+
+```html
+{% set pageHeaderTitle = title %}
+```
+
+Again for the header set `pageHeaderSummary` to refer to a specific markup structure.
+
+```html
+{% set pageHeaderSummary %}
+<time>...</time>
+<p>...</p>
+{% endset %}
+```
+
+The `set` statement makes it possible to store the markup in the summary variable, which is then included in the `page-header` partial.
+
+For the tags loop through the input array to generate a list of items.
+
+```html
+% for tag in tags %}
+<li>
+  <a href="/tag/{{ tag | slug }}/">#{{ tag | title | replace(' ', '') }}</a>
+</li>
+{% endfor %}
+```
+
+In the body of the anchor link use the `title` filter to create a capitalized version of the tag. Use the `replace` filter to remove whitespace.
+
+For the `href` attribute use the `slug` filter to produce a lowercase label where spaces are replaced with hyphens. `Design Thinking` becomes `design-thinking`.
+
+`slug`, `title` and `replace` are provided by 11ty and Nunjucks. Create your own filters with JavaScript functions. For the date, for instance create `date-filter.js` and `w3-date-filter.js` to format a date object. Taking the latter of the two as an example create and export a function.
+
+```js
+module.exports = (value) => new Date(value).toISOString();
+```
+
+In the config file `.eleventy.js` require the filter and add the functionality through the `config` object.
+
+```js
+const w3DateFilter = require("./src/filters/w3-date-filter.js");
+
+// config
+config.addFilter("w3DateFilter", w3DateFilter);
+```
+
+Use the filter like other available filters.
+
+```html
+<time datetime="{{ date | w3DateFilter }}"></time>
+```
+
+The markdown documents in `src/posts` are rendered as-is. To benefit from the layout file add a _directory data file_ in `src/posts/posts.json`.
+
+```json
+{
+  "layout": "layouts/post.html",
+  "permalink": "/blog/{{ title | slug }}/index.html"
+}
+```
+
+11ty applies the layout file on any markdown document in the same repository which does not specify a separate layout.
+
+With the permalink field create a page in the `/blog` route instead of `/posts`, the default 11ty uses considering the folder structure.
+
 ## Lesson 11: Blog feeds, tags and pagination
 
 The lesson produces a blog from articles in `src/posts`. Each article has a title, date and tags defined in the frontmatter.

@@ -4,6 +4,101 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 17: Meta info, RSS feeds and module recap
+
+Create a partial in `meta-info.html` to set meta information in the `<head>` element.
+
+```html
+<title>{{ pageTitle }}</title> <link rel="canonical" href="{{ currentUrl }}" />
+```
+
+The variables are set considering multiple configurations. For the title for instance initialize the variable with the input title and the site's name retrieved from `site.json`.
+
+```html
+{% set pageTitle = title + ' - ' + site.name %}
+```
+
+If the partial is used with a specific title override this value.
+
+```html
+{% if metaTitle %} {% set pageTitle = metaTitle %} {% endif %}
+```
+
+Include the partial in the base layout.
+
+```html
+<head>
+  {% include "partials/meta-info.html" %}
+</head>
+```
+
+As needed, set more specific meta variables, such as a description in `index.md`.
+
+```md
+---
+metaDesc: "A made up agency site that you build if you take Learn Eleventy From Scratch, by Piccalilli"
+---
+```
+
+For the RSS feed install an official 11ty module.
+
+```bash
+npm install @11ty/eleventy-plugin-rss
+```
+
+In `.eleventy.js` require include the plugin in the config object.
+
+```js
+const rssPlugin = require("@11ty/eleventy-plugin-rss");
+
+module.exports = (config) => {
+  config.addPlugin(rssPlugin);
+};
+```
+
+Update `site.json` to detail additional information on the author.
+
+```
+{
+  "authorName": "Issue 33",
+  "authorEmail": "hi@piccalil.li"
+}
+```
+
+Include the values in `rss.html` specifying the permalink for an `xml` file.
+
+```html
+---
+title: "Issue 33 Blog"
+summary: "A feed of the latest posts from our blog."
+permalink: "/feed.xml"
+---
+
+<?xml version="1.0" encoding="utf-8"?>
+```
+
+Following the specification for the RSS feed populate the page with a series of properties to describe the posts.
+
+```xml
+<updated>{{ collections.blog | rssLastUpdatedDate }}</updated>
+{% for post in collections.blog %}
+  <entry>
+  </entry>
+{% endfor %}
+```
+
+The `rssLastUpdatedDate` filter provides a date object for the collection through the rss module.
+
+Finally point to the feed from the base layout.
+
+```html
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  href="{{ site.url }}/feed.xml"
+/>
+```
+
 ## Lesson 16: Creating a work item page
 
 Create a new layout file in `work-item.html`. With this file extend the base layout and in the block of content describe an individual item from the work collection.

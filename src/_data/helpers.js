@@ -30,4 +30,8 @@ module.exports = {
 
     return limit ? filteredItems.slice(0, limit) : filteredItems;
   },
+
+  filterCollectionByKeys(collection, keys) {
+    return collection.filter((d) => keys.includes(d.data.key));
+  },
 };

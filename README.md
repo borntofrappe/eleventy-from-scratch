@@ -4,6 +4,83 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 16: Creating a work item page
+
+Create a new layout file in `work-item.html`. With this file extend the base layout and in the block of content describe an individual item from the work collection.
+
+```html
+{% block content %}
+<h1>{{ title }}</h1>
+<p>{{ summary }}</p>
+<img src="{{ hero.image }}" alt="{{ hero.imageAlt }}" />
+
+{% endblock %}
+```
+
+From the front matter inject the title, summary, hero image, but also the facts and images associated with the `keyFacts` and `gallery` arrays.
+
+```html
+{% for item in keyFacts %}
+<!-- li -->
+{% endfor %} {% for item in gallery %}
+<!-- figure -->
+{% endfor %}
+```
+
+Before the end of the `<section>` used as a wrapping container the idea is to include the people associated with the specific work, so to showcase how 11ty is able to create content based on the relationship between different pieces of data.
+
+Considering the markdown documents in the `src/work` folder the front matter adds an array of integers with the `team` key.
+
+```md
+---
+team: [1, 2, 5]
+---
+```
+
+These integers refer to an identifier set on the different persons in the people collection.
+
+```md
+---
+title: "Creative director"
+key: 1
+---
+```
+
+With this in mind the layout file retrieves a reference to the people associated with the project by filtering the people collection according to `team`.
+
+Create a helper function for the filtering operation in `helper.js`.
+
+```js
+filterCollectionByKeys(collection, keys) {
+  return collection.filter((d) => keys.includes(d.data.key));
+},
+```
+
+In the layout file call the function on the people collection with the array of keys.
+
+```js
+helpers.filterCollectionByKeys(collections.people, team);
+```
+
+In this manner you consider only the people whose key is present in the `team` array.
+
+Store the list in a variable and use its value with the `people` partial.
+
+```html
+{% set peopleItems = helpers.filterCollectionByKeys(collections.people, team) %}
+{% if peopleItems %}
+<h2>Meet the team behind this project</h2>
+{% include "partials/people.html" %} {% endif %}
+```
+
+Finally, add a data configuration file in `work.json` so that the markdown files rely on the layout.
+
+```json
+{
+  "layout": "layouts/work-item.html"
+}
+```
+
 ## Lesson 15: Adding our work landing page
 
 Create a new layout file in `work-landing.html`. With this file extend the base layout, set a specific title and summary.

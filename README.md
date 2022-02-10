@@ -4,6 +4,31 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 15: Adding our work landing page
+
+Create a new layout file in `work-landing.html`. With this file extend the base layout, set a specific title and summary.
+
+In the content block add a partial for the header and loop through a `work` collection to show the corresponding image.
+
+```html
+{% for item in collections.work %}
+<figure>
+  <img src="{{ item.data.hero.image }}" alt="{{ item.data.hero.imageAlt }}" />
+</figure>
+{% endfor %}
+```
+
+The named collection is already created for a previous lesson, [creating our first collection](#lesson-8-creating-our-first-collection).
+
+Create a new page in `work.md` with a specific title and layout file.
+
+```md
+---
+title: "Our finest work"
+layout: "layouts/work-landing.html"
+---
+```
+
 ## Lesson 14: Adding our about page
 
 Create a new layout file in `about.html`. With this file extend the base layout, set a specific title, summary.

@@ -4,6 +4,31 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 18: Setting up Gulp
+
+Use Gulp to set up an asset pipeline, to convert source code and assets in the production build.
+
+The website is scheduled to have three lines devoted to code, images and fonts. For each line Gulp helps to process the files in the `dist` folder.
+
+Install the task manager.
+
+```bash
+npm install gulp
+```
+
+Create a task file in `gulpfile.js` and describe a first task.
+
+```js
+exports.default = () => {
+  console.log("Hello world");
+  return Promise.resolve();
+};
+```
+
+Run `npx gulp` to print out the message in the console.
+
+The snippet returns a promise to let Gulp conclude the current task.
+
 ## Lesson 17: Meta info, RSS feeds and module recap
 
 Create a partial in `meta-info.html` to set meta information in the `<head>` element.

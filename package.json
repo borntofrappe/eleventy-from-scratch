@@ -4,7 +4,8 @@
   "description": "With this repository I set out to learn [11ty](https://www.11ty.dev/) following the guidance of [Andy Bell](https://twitter.com/piccalilli_) and his course [Learn Eleventy From Scratch](https://learneleventyfromscratch.com).",
   "main": ".eleventy.js",
   "scripts": {
-    "start": "npx eleventy --serve"
+    "start": "npx gulp && concurrently \"npx gulp watch\" \"npx eleventy --serve\"",
+    "production": "NODE_ENV=production npx gulp && NODE_ENV=production npx eleventy"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,11 @@
     "@11ty/eleventy": "^1.0.0",
     "@11ty/eleventy-cache-assets": "^2.3.0",
     "@11ty/eleventy-plugin-rss": "^1.1.2",
+    "concurrently": "^7.0.0",
     "gulp": "^4.0.2",
-    "moment": "^2.29.1"
+    "gulp-clean-css": "^4.3.0",
+    "gulp-sass": "^4.1.0",
+    "moment": "^2.29.1",
+    "sass": "^1.49.7"
   }
 }

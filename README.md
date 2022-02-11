@@ -4,6 +4,188 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 19: Setting up Sass
+
+Use Sass to extend the CSS native language. With Gulp create a task to convert `.scss` files to `.css`.
+
+Install three libraries to set up the task.
+
+```bash
+npm install gulp-clean-css gulp-sass@4.1.0 sass
+```
+
+- `gulp-sass` version 4.1.0 is due to breaking changes in later versions of the API
+
+- `sass` is to have the gulp library use the canonical version of Sass insteed of the version included in `gulp-sass`
+
+```js
+const { dest, src } = require("gulp");
+
+const cleanCSS = require("gulp-clean-css");
+const sassProcessor = require("gulp-sass");
+
+sassProcessor.compiler = require("sass");
+```
+
+For the task consider the node environment to potentially compress the output folder.
+
+```js
+const isProduction = process.env.NODE_ENV === "production";
+```
+
+Consider an array of stylesheets in `scss` format that are deemed _critical_. These assets are included in a separate location from regular stylesheets.
+
+```js
+const criticalStyles = [
+  "critical.scss",
+  "home.scss",
+  "page.scss",
+  "work-item.scss",
+];
+```
+
+With `calculateOutput` create a function describe where the output is processed. This is to differentiate the location on the basis of the critical array. Critical CSS is purposed _inline_, in a `<style>` element.
+
+Past the utility function create `sass` to consider all stylesheet and pipe them to the processor.
+
+```js
+return src('./src/scss/*.scss')
+  .pipe(sassProcessor().on('error', sassProcessor.logError))
+  .pipe(
+    cleanCSS(
+      isProduction ? {
+        level: 2
+      } : {}
+    )
+  )
+  .pipe(dest(calculateOutput, { sourceMaps: !isProduction}))
+  }
+```
+
+`gulp-sass` and the associated processor convert the Sass syntax to valid CSS. `gulp-clean-css` optimizes the output. The last pipe operation positions the output in the `./dist/css` or `./src/_includes/css` folder.
+
+By default 11ty ignores the files described in `.gitignore`, among which the output folders.
+
+```.gitignore
+dist
+src/_includes/css
+```
+
+Update the `config` object in `eleventy.config.js` to avoid this preference.
+
+```js
+config.setUseGitIgnore(false);
+```
+
+Add a separate file in `.eleventyignore` to describe which files 11ty should ignore.
+
+```.eleventyignore
+node_modules
+```
+
+CSS is conceptually split between critical and standard. With this in mind create am `src/scss` folder.
+
+Create `critical.scss` to import a reset file.
+
+```scss
+@import "reset";
+```
+
+Create `_reset.scss` to add global values for the entire application. The underscore allows to have Sass ignore the file, but include its key-value pairs through the `import` statement.
+
+Update the gulpfile `gulpfile.js` to add Sass as a task.
+
+```js
+const sass = require("./gulp-tasks/sass");
+```
+
+With the task runner use `watch` with a `watcher` helper function to process the files every time the `.scss` documents change.
+
+```js
+const { watch } = require("gulp");
+
+const watcher = () => {
+  watch("./src/scss/**/*.scss", { ignoreInitial: true }, sass);
+};
+
+exports.watch = watcher;
+```
+
+`exports.fn` is equivalent to `module.exports.fn`.
+
+Use the `parallel` function to run the task.
+
+```js
+const { parallel } = require("gulp");
+
+exports.default = parallel(sass);
+```
+
+`exports.default.fn` describes which task to run by default, running `npx gulp` in the command line. To watch the files you'd run `npx gulp watch`.
+
+Update the node scripts to support `npm run start` and `npm run production`.
+
+With the first command execute:
+
+1. `npx gulp`
+
+2. `concurrently \"npx gulp watch\" \"npx eleventy --serve\"
+
+`concurrently` is a separate library to ensure the watch and serve command run together
+
+```bash
+npm install concurrently
+```
+
+With the second command set an environmental variable before running `npx gulp` and `npx eleventy`.
+
+```bash
+NODE_ENV=production npx gulp # && ...
+```
+
+The variable is picked up by the task to optimize the output in the `dist` folder.
+
+With this setup add the critical CSS to the base layout in the `<head>` of the document.
+
+```html
+<style>
+  {% include "css/critical.css" %}
+</style>
+```
+
+Include additional and critical CSS with a separate variable.
+
+```html
+{% if pageCriticalStyles %} {% for item in pageCriticalStyles %}
+<style>
+  {% include item %}
+</style>
+{% endfor %} {% endif %}
+```
+
+This convenience helps to add critical stylesheets from layout files, just by defining the variable.
+
+Past the critical values repeat the operation for non-critical CSS. In this instance inject the styles with a _hash_.
+
+```html
+<link
+  rel="stylesheet"
+  media="print"
+  href="/fonts/fonts.css?{{ assetHash }}"
+  onload="this.media='all'"
+/>
+```
+
+_Aside_: the `media` attribute set to `print` tells the browser not to prioritise the stylesheet unless printing. Together with the `onload` attribute the idea is to have the browser load other essential resources first.
+
+The `href` attribute refers to a stylesheet with a hash `assetHash`. Define the variable at the top of the base layout.
+
+```html
+{% set assetHash = global.random() %}
+```
+
+Define the helper function in `_data/global.js`. The goal is to return a random string to create a distinct hash for each build. A different hash helps to update the cache and avoid outdated CSS.
+
 ## Lesson 18: Setting up Gulp
 
 Use Gulp to set up an asset pipeline, to convert source code and assets in the production build.

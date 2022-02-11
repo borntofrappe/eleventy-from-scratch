@@ -1,11 +1,11 @@
-const rssPlugin = require('@11ty/eleventy-plugin-rss')
+const rssPlugin = require("@11ty/eleventy-plugin-rss");
 
 const sortByDisplayOrder = require("./src/utils/sort-by-display-order");
 const dateFilter = require("./src/filters/date-filter.js");
 const w3DateFilter = require("./src/filters/w3-date-filter.js");
 
 module.exports = (config) => {
-  config.addPlugin(rssPlugin)
+  config.addPlugin(rssPlugin);
 
   config.addPassthroughCopy("./src/images/");
 
@@ -33,6 +33,9 @@ module.exports = (config) => {
 
   config.addFilter("dateFilter", dateFilter);
   config.addFilter("w3DateFilter", w3DateFilter);
+
+  // Tell 11ty to use the .eleventyignore and ignore our .gitignore file
+  config.setUseGitIgnore(false);
 
   return {
     markdownTemplateEngine: "njk",

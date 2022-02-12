@@ -4,6 +4,76 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 21: Setting up images
+
+Use `gulp-imagemin` to process, optimize and distribute images.
+
+Install the library in version `7.*.*`.
+
+```bash
+npm i gulp-imagemin@7.1.0
+```
+
+Later versions introduce breaking changes.
+
+Create a task in the `gulp-file` folder in `images.js`.
+
+```js
+const { dest, src } = require("gulp");
+const imagemin = require("gulp-imagemin");
+```
+
+Export a function which processes the images through the library.
+
+```js
+const images = () => {};
+
+module.exports = images;
+```
+
+In the function consider all the images in the `src/images` folder.
+
+```js
+return;
+src("./src/images/**/*");
+```
+
+First pipe the images through the `imagemin` package.
+
+```js
+.pipe(
+  imagemin(
+  )
+)
+```
+
+The library processes the images with a processor according to their format.
+
+```js
+imagemin([
+  imagemin.mozjpeg({ quality: 60, progressive: true }),
+  imagemin.optipng({ optimizationLevel: 5, interlaced: null }),
+]);
+```
+
+Then pipe the processed files in the output folder.
+
+```js
+.pipe(dest("./dist/images"));
+```
+
+In `gulpfile.js` require the task and include its functionality in the watcher to consider changes in the `images` folder.
+
+```js
+watch("./src/images/**/*", { ignoreInitial: true }, images);
+```
+
+Add the task to the `parallel` function to also
+
+```js
+exports.default = parallel(fonts, images, sass);
+```
+
 ## Lesson 20: Setting up fonts
 
 Use `get-google-fonts` to:

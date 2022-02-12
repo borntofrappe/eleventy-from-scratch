@@ -4,6 +4,76 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 20: Setting up fonts
+
+Use `get-google-fonts` to:
+
+1. grab the fonts served by Google fonts
+
+2. store the fonts in the output folder
+
+3. create a stylesheet which references the fonts
+
+The goal is to ultimately complete the `<link>` element included in the previous lesson and in the base layout.
+
+```html
+<link rel="stylesheet" href="/fonts/fonts.css?{{ assetHash }}" />
+```
+
+Install the library.
+
+```bash
+npm i get-google-fonts
+```
+
+Create a task in the `gulp-file` folder in `fonts.js`.
+
+```js
+const { dest, src } = require("gulp");
+const GetGoogleFonts = require("get-google-fonts");
+```
+
+Export a function which downloads two fonts from Google Fonts, Literata and Red Hat Display.
+
+```js
+const fonts = async () => {};
+module.exports = fonts;
+```
+
+In the exported function create an isntance of the library specifying an output folder and a CSS file.
+
+```js
+const instance = new GetGoogleFonts({
+  outputDir: "./dist/fonts",
+  cssFile: "./fonts.css",
+});
+```
+
+The library download the asssets in `./dist/fonts` and imports them in `./fonts.css`.
+
+For the fonts download the specific choices through the `download` method.
+
+```js
+const result = await instance.download(
+  "https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,400;0,700;1,400&family=Red+Hat+Display:wght@400;900"
+);
+
+return result;
+```
+
+In `gulpfile.js` require the task and include its functionality prior to the Sass task.
+
+```js
+const fonts = require("./gulp-tasks/fonts");
+const sass = require("./gulp-tasks/sass");
+```
+
+Run both tasks through the `parallel` function.
+
+```js
+exports.default = parallel(fonts, sass);
+```
+
 ## Lesson 19: Setting up Sass
 
 Use Sass to extend the CSS native language. With Gulp create a task to convert `.scss` files to `.css`.

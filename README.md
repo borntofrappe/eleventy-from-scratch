@@ -4,6 +4,165 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 22: Global CSS and design tokens
+
+The lesson provides [starter files](https://piccalilli.s3.eu-west-2.amazonaws.com/eleventy-from-scratch/eleventy-from-scratch-front-end-build-starter-files.zip) to include in the `scss` folder. From this starting point the course introduces a utility library to write CSS.
+
+Install `gorko`.
+
+```bash
+npm i gorko
+```
+
+At high level the idea is to create a configuration file `_config.scss` which creates classes on the basis of `$gorko-*` variables.
+
+Consider for instance `$gorko-colors`.
+
+```scss
+$gorko-colors: (
+  'dark': #38445b,
+  'dark-shade': #263147,
+  'dark-glare': #505c73,
+  // ...
+}
+```
+
+With `$gorko-config` you describe how to create classes.
+
+```scss
+$gorko-config: (
+  "bg": (
+    "items": $gorko-colors,
+    "output": "standard",
+    "property": "background",
+  ),
+);
+```
+
+The library produces the classes using the key as a name, for each of the items defined in the respective property.
+
+```css
+.bg-dark {
+  background: #38445b;
+}
+.bg-dark-shade {
+  background: #263147;
+}
+.bg-dark-glare {
+  background: #505c73;
+}
+```
+
+The `output` field is set to either `standard` or `responsive`. In this last instance gorko produces as many sets of custom properties for each breakpoint in the config file.
+
+Consider for instance `$gorko-size-scale`, which introduces the perfect fourth scale.
+
+```scss
+$gorko-size-scale: (
+  "300": $gorko-base-size * 0.75,
+  "400": $gorko-base-size,
+  "500": $gorko-base-size * 1.33,
+);
+```
+
+In the configuration block the values are picked up in a `flow-space` utility.
+
+```scss
+$gorko-config: (
+  "flow-space": (
+    "items": $gorko-size-scale,
+    "output": "responsive",
+    "property": "--flow-space",
+  ),
+);
+```
+
+With `standard` the library would produce `flow-space-300`, `flow-space-400` and so forth. With `responsive` gorko looks at the breakpoints.
+
+```scss
+$gorko-config: (
+  //
+  "breakpoints":
+    (
+      "md": "(min-width: 37em)",
+      "lg": "(min-width: 62em)",
+    )
+);
+```
+
+For each breakpoint the library produces media queries.
+
+```css
+@media (min-width: 37em) {
+}
+
+@media (min-width: 62em) {
+}
+```
+
+In the media queries the library produces additional set of classes: `md\:flow-space-300`, `md\:flow-space-400` and so forth; `lg\:flow-space-300`, `lg\:flow-space-400` and so forth.
+
+The back slash character works to escape the colon.
+
+```css
+.flow-space-300 {
+  --flow-space: 1rem;
+}
+.md\:flow-space-300 {
+  --flow-space: 1rem;
+}
+.lg\:flow-space-300 {
+  --flow-space: 1rem;
+}
+```
+
+The goal is to ultimately add the classes in the markup.
+
+```html
+<div class="flow-space-300 md:flow-space-400">
+  <!--  -->
+</div>
+```
+
+Past the configuration file the `utilities` and `blocks` folders create additional classes to comply with the CUBE methodology.
+
+`utilities` create classes such as `.wrapper` to horizontally center a container.
+
+```scss
+.wrapper {
+  max-width: 70rem;
+  padding: 0 get-size("500");
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+```
+
+With `get-size` gorko picks up the `500` from the size scale.
+
+`blocks` provide classes such as `.definition-group` to create a grid container.
+
+```scss
+.definition-group {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  grid-gap: 0.5rem 1.5rem;
+}
+```
+
+Past this rough overview add a series of key-value pairs in `scss/critical.scss` making use of some of the utilities provided by `gorko`.
+
+These utilities help to modify the appearance of the website in terms of spacing, color and sizes by setting global values. Consider these global styles affecting the entire application.
+
+```scss
+body {
+  background: get-color("light");
+  color: get-color("dark-shade");
+}
+```
+
+At the end of the file the idea is to then import the block and utilities from the respective folders.
+
 ## Lesson 21: Setting up images
 
 Use `gulp-imagemin` to process, optimize and distribute images.

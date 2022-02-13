@@ -4,6 +4,28 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 23: Styling global blocks
+
+Update the base layout to wrap the markup in a generic `<div>` container with a class of `site-wrap`. This helps with horizontal overflow.
+
+Before the end of the base layout include a footer.
+
+To style the site header, footer and primary navigation create blocks.
+
+Create `_site-head.scss` to update the container with a `site-head` class and the more specific `site-head__inner`, `site-head__brand`. The header is styled as a flex container to position the nested SVG and links side by side.
+
+Create `_nav.scss` to show the links in the navigation side by side.
+
+Create `_site-foot.scss` to increase the whitespace around the footer's elements.
+
+To include the key value pairs in the site import the blocks in `critical.scss`.
+
+```scss
+@import "blocks/site-head";
+@import "blocks/nav";
+@import "blocks/site-foot";
+```
+
 ## Lesson 22: Global CSS and design tokens
 
 The lesson provides [starter files](https://piccalilli.s3.eu-west-2.amazonaws.com/eleventy-from-scratch/eleventy-from-scratch-front-end-build-starter-files.zip) to include in the `scss` folder. From this starting point the course introduces a utility library to write CSS.

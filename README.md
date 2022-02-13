@@ -4,6 +4,25 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 24: Styling the skip link
+
+Create two blocks, `_button.scss` and `_skip-link.scss` to style all elements with a class of `button` and then specifically target the anchor link element which allows to skip the site header and move focus to the container with an id of `content`.
+
+The code makes use of two notable features:
+
+1. `@extend` syntax to include the key-value pairs defined in other classes
+
+2. `!import` command to have the background and color property on hover take precedence over the values specified on buttons with a specific `data` attribute
+
+The skip link specifically includes the CSS declarations to hide the element but from assistive technologies.
+
+To include the key value pairs in the site import the blocks in `critical.scss`.
+
+```scss
+@import "blocks/button";
+@import "blocks/skip-link";
+```
+
 ## Lesson 23: Styling global blocks
 
 Update the base layout to wrap the markup in a generic `<div>` container with a class of `site-wrap`. This helps with horizontal overflow.

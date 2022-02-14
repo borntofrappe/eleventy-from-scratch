@@ -4,6 +4,49 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 27: Styling the blog
+
+Before the blog create a block in `_page-header.scss` to increase the padding around the elements with the corresponding class.
+
+```scss
+.page-header {
+  padding: get-size("800") 0;
+}
+```
+
+Import the blog in the critical stylesheet.
+
+```scss
+@import "blocks/page-header";
+```
+
+Past this declaration available to all routes, the blog consists of two pages — `feed.html` and `post.html`. In each of the layout files include a stylesheet through the `pageCriticalStyles` variable.
+
+```html
+{% set pageCriticalStyles = ["css/page.css"] %}
+```
+
+Create `page.scss` similarly to `home.scss`, essentially setting up the configuration for the gorko library and importing the blocks relevant to the page.
+
+```scss
+@import "blocks/post-list";
+//
+```
+
+Create a block in `_post-list.scss` to update the design of anchor the link elements pointing to the individual articles.
+
+Create a block in `_pagination.scss` to separate the two anchor links forwarding to newer and older posts respectively.
+
+Create a block in `_page-content.scss` to style `blockquote` elements and manage the vertical rhythm of the articles.
+
+Finally, import the different blocks from the stylesheet included in the layout files.
+
+```scss
+@import "blocks/post-list";
+@import "blocks/pagination";
+@import "blocks/page-content";
+```
+
 ## Lesson 26: Home page panels
 
 For the call to action import a `cta.scss` block from `critical.scss`. This is to have the component included on every page.

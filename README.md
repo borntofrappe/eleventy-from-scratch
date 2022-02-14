@@ -4,6 +4,159 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 26: Home page panels
+
+For the call to action import a `cta.scss` block from `critical.scss`. This is to have the component included on every page.
+
+```scss
+@import "blocks/cta";
+```
+
+In the block update the layout with grid properties only within the media query describing larger viewports.
+
+For the medium breakpoint divide the width in 12 columns.
+
+```css
+grid-template-columns: repeat(12, 1fr);
+```
+
+Have the heading container span to cover the first nine columns.
+
+```scss
+&__heading {
+  grid-column: 1/9;
+}
+```
+
+Have the summary container on the second row, from column 12 to 5 in reverse order.
+
+```scss
+&__summary {
+  grid-row: 2;
+  grid-column: 12/5;
+}
+```
+
+Have the action container occupy the third row, from column 3 to 12.
+
+```scss
+&__action {
+  grid-row: 3;
+  grid-column: 3/12;
+}
+```
+
+For the large breakpoint consider a smaller number of columns for the summary and action.
+
+```scss
+&__summary {
+  grid-column: 12/7;
+}
+
+&__action {
+  grid-column: 6/12;
+}
+```
+
+In terms of spacing the container adds a `margin-top` property through the `flow` utility.
+
+```html
+<div class="[ cta__inner ] [ flow ]"></div>
+```
+
+If grid properties are supported, however, this default is removed in favor of the gap provided by `grid-gap`.
+
+```scss
+@supports (display: grid) {
+  > * {
+    margin: 0;
+  }
+}
+```
+
+Beside the block import a utility to style the heading.
+
+```scss
+@import "utilities/headline";
+```
+
+Create `_headline.scss` as a utility to increase the size of the `.heading` element, particularly for large viewports.
+
+For the section devoted to the featured work import a block in the stylesheet devoted to the home layout.
+
+```scss
+@import "blocks/featured-work";
+```
+
+Create the block once again to position the elements in a grid, once again pending the breakpoints.
+
+For the medium breakpoint position the elements in a 12 column grid, with the heading introducing the section spreading across the entirety of the first row.
+
+```scss
+grid-template-columns: repeat(12, 1fr);
+
+&__intro {
+  grid-column: 1/13;
+  align-self: end;
+}
+```
+
+For the images position each successive child elements in the first and second half of the container.
+
+```scss
+&__item {
+  &:nth-child(odd) {
+    grid-column: 1/8;
+  }
+
+  &:nth-child(even) {
+    grid-column: 13/6;
+  }
+}
+```
+
+For the large breakpoint alternate the elements left and right in between two columns.
+
+```scss
+grid-template-columns: repeat(2, 1fr);
+
+&__intro,
+&__item {
+  &:nth-child(odd) {
+    grid-column: 1/7;
+  }
+
+  &:nth-child(even) {
+    grid-column: 13/7;
+  }
+}
+```
+
+For the section devoted to the studio feed import a block in the stylesheet devoted to the home layout.
+
+```scss
+@import "blocks/studio-feed";
+```
+
+Create the block to position the elements in a row allowing for horizontal scroll.
+
+```scss
+.studio-feed {
+  &__list {
+    display: flex;
+    overflow-x: auto;
+  }
+}
+```
+
+Force each image not to shrink through the `flex-shrink○ property.
+
+```scss
+> * {
+  flex-shrink: 0;
+}
+```
+
 ## Lesson 25: Home page intro
 
 The lesson updates the layout of the elements in the `.intro` container in the home page with CSS grid. For reference the markup is structured with three nested containers.

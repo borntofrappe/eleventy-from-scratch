@@ -4,6 +4,40 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 28: Styling the about page
+
+For the about page create a utility in `_auto-grid.scss` to position the images in a grid.
+
+```scss
+.auto-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(var(--auto-grid-min-size, 16rem), 1fr)
+  );
+  grid-gap: var(--auto-grid-gap, get-size("500"));
+}
+```
+
+By combining `auto-fill` with a variable size for the column, between a minimum and `16rem`, the container allocates the child elements in as many columns as allowed by the width of the element.
+
+Import the utility in the critical stylesheet.
+
+```scss
+@import "utilities/auto-grid";
+```
+
+Past the grid container create a block in `_people.scss` to increase the spacing between the images in the grid.
+
+Create another block in `_person.scss` to change the appearance of the image and attached caption.
+
+Import both blocks in the critical stylesheet.
+
+```scss
+@import "blocks/people";
+@import "blocks/person";
+```
+
 ## Lesson 27: Styling the blog
 
 Before the blog create a block in `_page-header.scss` to increase the padding around the elements with the corresponding class.

@@ -4,6 +4,41 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 29: Add a contact page
+
+The contact page helps to reinforce the concepts introduced in the course and the asset pipeline.
+
+Create a layout file `page.html` which extends the base layout and makes use of the `page.scss` stylesheet.
+
+```html
+{% extends "layouts/base.html" %} {% set pageCriticalStyles = ["css/page.css"]
+%}
+```
+
+In terms of content include the partial for the page header with a given title.
+
+```html
+{% set pageHeaderTitle = title %}
+<article>{% include "partials/page-header.html" %}</article>
+```
+
+Past the partial add the content in a given markup structure.
+
+```html
+<div>{{ content | safe }}</div>
+```
+
+Create the page `contact.md` to use the layout and define the variables.
+
+```md
+---
+title: "Contact us"
+layout: "layouts/page.html"
+---
+
+This is ...
+```
+
 ## Lesson 28: Styling the about page
 
 For the about page create a utility in `_auto-grid.scss` to position the images in a grid.

@@ -4,6 +4,37 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 30: Styling the work section
+
+In the critical stylesheet import a utility to change the layout of `.gallery` containers.
+
+```scss
+@import "blocks/gallery";
+```
+
+Create the block `_gallery.scss` to position the nested child elements in a single column layout.
+
+On larger viewports modify the `align-items` and `flex-direction` properties to position the children alternatively left and right.
+
+Past the block, useful for the entirety of the application, create dedicated blocks for the page devoted to work items. Import these blocks from `work-item.scss`
+
+```scss
+@import "blocks/hero";
+@import "blocks/key-facts";
+```
+
+In the stylesheet specify the same gorko configuration introducing the home or page stylesheet files.
+
+Create the block `_hero.scss` to position the heading above a large image describing the work item.
+
+Create the block `key-facts` to increase the whitespace around the statistics.
+
+Since the blocks are imported in the dedicated stylesheet, and not in the critical file, reference the file in `work-item.html`.
+
+```html
+{% set pageCriticalStyles = ["css/work-item.css"] %}
+```
+
 ## Lesson 29: Add a contact page
 
 The contact page helps to reinforce the concepts introduced in the course and the asset pipeline.

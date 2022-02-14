@@ -4,6 +4,139 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 25: Home page intro
+
+The lesson updates the layout of the elements in the `.intro` container in the home page with CSS grid. For reference the markup is structured with three nested containers.
+
+```html
+<article class="intro">
+  <div class="intro__header"></div>
+  <div class="intro__content"></div>
+  <div class="intro__media"></div>
+</article>
+```
+
+Create a stylesheet `home.scss` to import the configuration and utilities from the gorko library.
+
+```scss
+@import "config";
+
+$outputTokenCSS: false;
+
+@import "../../node_modules/gorko/gorko.scss";
+```
+
+By setting `$outputTokenCSS` to false gorko does not create utility classes for the specific stylesheet.
+
+Create the block `_intro.scss` which accommodates different layouts depending on the viewport width with CSS grid and the media queries produced by gorko.
+
+Focusing on grid properties create a single column layout with four rows of an explicit size.
+
+```scss
+.intro {
+  display: grid;
+  grid-template-rows: get-size("700") minmax(0, 1fr) get-size("700") auto;
+  grid-gap: get-size("500");
+
+  > * {
+    grid-column: 1;
+  }
+}
+```
+
+With `grid-column: 1` every direct children is included in a new row.
+
+Position the content in the last row, sized `auto` to be as tall as the nested paragraph and anchor link.
+
+```scss
+&__content {
+  grid-row: 4;
+}
+```
+
+For the heading and image, so to have the two overlap, position the heading in the second row. Position the image across the first three rows.
+
+```scss
+&__header {
+  grid-row: 2;
+}
+
+&__media {
+  grid-row: 1/4;
+}
+```
+
+With the explicit size of the first and third row the image is guaranteed to extend above and below the heading.
+
+In the first media query change the layout to explicitly set two columns and four rows.
+
+```css
+grid-template-rows: get-size("500") auto auto auto;
+grid-template-columns: minmax(15rem, 1fr) 2fr;
+```
+
+In this instance position the content in the first column and penultimate row
+
+```scss
+&__content {
+  grid-row: 3/4;
+  grid-column: 1;
+}
+```
+
+Position the heading across the first row,
+
+```scss
+&__header {
+  grid-column: 1/3;
+}
+```
+
+Position the image in the last column and across all the available rows
+
+```scss
+&__media {
+  grid-column: 2/3;
+  grid-row: 1/5;
+}
+```
+
+In the final media query change the layout to increase the size of the second column, the one devoted to the image.
+
+```css
+grid-template-columns: 1fr minmax(44rem, 1fr);
+```
+
+Size the image to have a maximum height.
+
+```scss
+&__media {
+  height: 28rem;
+}
+```
+
+Import the block in `home.scss`.
+
+```scss
+@import "blocks/intro";
+```
+
+Include the stylesheet in the specific layout, `home.html`, and through the `pageCriticalStyles` variable.
+
+```html
+{% set pageCriticalStyles = ['css/home.css'] %}
+```
+
+As per the configuration in [lesson 19](#lesson-19-setting-up-sass) the stylesheet is included in the `<head>` element of the base layout.
+
+```html
+{% if pageCriticalStyles %} {% for item in pageCriticalStyles %}
+<style>
+  {% include item %}
+</style>
+{% endfor %} {% endif %}
+```
+
 ## Lesson 24: Styling the skip link
 
 Create two blocks, `_button.scss` and `_skip-link.scss` to style all elements with a class of `button` and then specifically target the anchor link element which allows to skip the site header and move focus to the container with an id of `content`.

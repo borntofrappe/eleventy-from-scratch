@@ -1913,7 +1913,14 @@ For the specific function return a string with specific `aria-` and `data-` attr
 Use the function directly in the markup.
 
 ```html
-<a href="{{item.url}}" {{helpers.getLinkActiveState(item.url, page.url)}}> </a>
+<a
+  href="{{item.url}}"
+  {{helpers.getLinkActiveState(item.url,
+  page.url)
+  |
+  safe}}
+>
+</a>
 ```
 
 11ty provides `page` as global data.

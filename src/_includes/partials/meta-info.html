@@ -18,9 +18,14 @@
   {% set metaDesc = summary %}
 {% endif %}
 
+{% if not socialImage %}
+  {% set socialImage = site.url + "/images/meta/social-share.png" %}
+{% endif %}
 
 <title>{{ pageTitle }}</title>
 <link rel="canonical" href="{{ currentUrl }}" />
+
+<link rel="icon" href="/images/meta/favicon.svg" type="image/svg+xml" />
 
 <meta property="og:site_name" content="{{ siteTitle }}" />
 <meta property="og:title" content="{{ pageTitle }}" />

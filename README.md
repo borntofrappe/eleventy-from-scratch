@@ -4,6 +4,94 @@ With this repository I set out to learn [11ty](https://www.11ty.dev/) following 
 
 There are approximately 30 lessons, to which I dedicate individual branches.
 
+## Lesson 31: Wrapping up
+
+The lesson concludes the course with a production-ready website.
+
+Download [assets](https://piccalilli.s3.eu-west-2.amazonaws.com/eleventy-from-scratch/eleventy-from-scratch-meta-images.zip) and store them in the `src/images/meta` folder.
+
+Update the partial devoted to the `<meta>` tags to include the URL for the social image with a variable.
+
+```html
+{% if not socialImage %} {% set socialImage = site.url +
+'/images/meta/social-share.png' %} {% endif %}
+```
+
+The meta properties are already present and pending the `socialImage` variable.
+
+```html
+{% if socialImage %}
+<meta name="twitter:card" content="summary_large_image" />
+<!--  -->
+{% endif %}
+```
+
+Update the partial to point to the icon through a `<link>` element.
+
+```html
+<link rel="icon" href="/images/meta/favicon.svg" type="image/svg+xml" />
+```
+
+For the HTML output minify the output with an 11ty _transform_.
+
+Install `html-minifier`
+
+```bash
+npm i html-minifier
+```
+
+Create a folder `src/transforms` and export a function to make use of the `html-minifier` library.
+
+Create `html-min-transform.js` and export a function to minify only `html` files.
+
+```js
+module.exports = (value, outputPath) => {
+  if (outputPath && outputPath.indexOf(".html") > -1) {
+  }
+};
+```
+
+Process the syntax with the installed module.
+
+```js
+return htmlmin.minify(value, {
+  useShortDoctype: true,
+  removeComments: true,
+  collapseWhitespace: true,
+  minifyCSS: true,
+});
+```
+
+Outside out markup files return the value as-is.
+
+```js
+return value;
+```
+
+Require the transforming function in `eleventy.config.js`.
+
+```js
+const htmlMinTransform = require("./src/transforms/html-min-transform");
+```
+
+Add the transform only in the production build checking `process.env.NODE_ENV`.
+
+```js
+const isProduction = process.env.NODE_ENV === "production";
+
+if (isProduction) {
+  config.addTransform("htmlmin", htmlMinTransform);
+}
+```
+
+To test the production build:
+
+- run `npm run production`
+
+- run `cd dist && npx serve`
+
+`serve` serves the website on localhost, where the source is minified.
+
 ## Lesson 30: Styling the work section
 
 In the critical stylesheet import a utility to change the layout of `.gallery` containers.

@@ -15,8 +15,6 @@ primaryCTA:
     Eleventy From Scratch” course so it is all made up as a pretend
     context. You will learn a lot about Eleventy by building this site
     though. Take the course today!"
-  buttonText: "Go to course"
+  buttonText: "Buy a copy"
   buttonUrl: "https://learneleventyfromscratch.com"
 ---
-
-This is pretty _rad_, right?

@@ -1,153 +1,20 @@
 # eleventy-from-scratch
 
-With this repository I set out to learn [11ty](https://www.11ty.dev/) following the guidance of [Andy Bell](https://twitter.com/piccalilli_) and his course [Learn Eleventy From Scratch](https://learneleventyfromscratch.com).
+[Andy Bell](https://twitter.com/hankchizljaw) teaches [11ty](https://www.11ty.dev/) with the course [Learn Eleventy From Scratch](https://learneleventyfromscratch.com).
 
-There are approximately 30 lessons, to which I dedicate individual branches.
+This repository builds toward [the final website](https://issue33.com/) following the course lesson by lesson, branch by branch.
 
-## Lesson 6: Partials basics
+## Lesson 1: Intro
 
-Partials are fragments in which to split the codebase.
+[Download the starter files](https://piccalilli.s3.eu-west-2.amazonaws.com/eleventy-from-scratch/eleventy-from-scratch-starter-files.zip) and extract the `src` folder in the local directory.
 
-Create a folder for partial files in `_includes/partials`.
-
-Create a partial in `site-head.html` with a `<header>` wrapping around a company logo and basic navigation.
-
-Include the partial in any templating file, such as `base.html`.
-
-```html
-{% include "partials/site-head.html" %}
-```
-
-Partials are not constrained to `.html` documents. It is possible to include any other format such as `.svg` for a company logo.
-
-```html
-{% include "partials/brand.svg" %}
-```
-
-_Aside_:
-
-- the `.svg` logo has an `aria-hidden` and `focusable` attribute to improve accessibility. The graphic is treated as purely decorative
-
-- `base.html` injects the block content in a `<main>` container with a `tabindex` and `id` attribute. The landmark can be focused with an anchor link pointing to the identifier
-
-- the `<header>` element in the partial has a role of `banner` to improve accessibility
-
-## Lesson 5: Passthrough basics
-
-Passthrough is how you let 11ty know to copy assets in the output folder. The feature is useful for static images and stylesheet files, included as-is.
-
-Update the eleventy config file to keep the images in `src/images`.
-
-```js
-config.addPassthroughCopy("./src/images/");
-```
-
-## Lesson 4: Front matter basics
-
-Front matter is how you define variables in markdown documents. The syntax follows the YAML language including the variables with key value pairs in between `---` dashes.
-
-Update `index.md` to include an `intro` with several fields such as `main` and `summary`.
-
-```md
----
-intro:
-  main: "Bread & Butter"
-  summary: "..."
----
-```
-
-Inject the values as if `intro` were an object.
-
-```html
-<p>{{ intro.summary }}</p>
-```
-
-## Lesson 3: Nunjucks basics
-
-Nunjucks refers to a _templating language_ to create markup with logic — consider variables and loops.
-
-Add the `njk` extension to the eleventy config file.
-
-```js
-return {
-  markdownTemplateEngine: "njk",
-  dataTemplateEngine: "njk",
-  htmlTemplateEngine: "njk",
-  // dir
-};
-```
-
-The configuration allows to include Nunjucks syntax in `.html` documents.
-
-Create a folder for layout files in `_includes/layouts`.
-
-Create a base layout in `base.html` with the skeleton of an HTML page — the initial structure is produced with Emmet and the `!` abbreviation.
-
-In the `<title>` element inject the value of a `title` variable.
-
-```html
-<title>{{ title }}</title>
-```
-
-In the `<body>` element inject the content provided by a _block_.
-
-```html
-<body>
-  {% block content %}{% endblock %}
-</body>
-```
-
-The block works as a placeholder for any time of content using the layout.
-
-```html
-{% block content %}
-<h1>Hello world</h1>
-{% endblock %}
-```
-
-With the snippet the heading would replace the block placeholder.
-
-Create a separate layout file in `home.html` which extends from the base layout.
-
-```html
-{% extends "layouts/base.html" %}
-```
-
-Add a specific markup structure in the placeholder block.
-
-```html
-{% block content %}
-<article>
-  <h1>{{ title }}</h1>
-  {{ content | safe }}
-</article>
-{% endblock %}
-```
-
-In the context of markdown documents `content` refers to the text beyond the front matter. `safe` is a _filter_ to automatically escape the input.
-
-Update `index.md` to define the `title` variable in the front matter and reference the layout file.
-
-```md
----
-title: "Hello world"
-layout: "layouts/home.html"
----
-
-This is pretty _rad_, right?
-```
-
-The index file uses the home layout, the home layout extends the base layout. The end result is that 11ty creates an `.html` page with the variable and content.
-
-_Aside:_ without the `safe` flag the content would include the HTML tags associated with the markdown file.
-
-```html
-<p>This is pretty <em>rad</em>, right?</p>
-```
+Add a `.gitignore` file to remove a series of files and folders from the git control.
 
 ## Lesson 2: Hello world
 
-Create `.eleventy.js` as a configuration file. Describe the input and output folders for the utility.
+Create `.eleventy.js` as a configuration file.
+
+In `.eleventy.js` describe the folders used by the utility.
 
 ```js
 module.exports = (config) => {
@@ -160,19 +27,35 @@ module.exports = (config) => {
 };
 ```
 
-Initialize a package file with `npm init -y`.
+> 11ty will consider the files in the `src` folder, produce the website in a `dist` folder.
 
-Install eleventy with `npm install @11ty/eleventy`.
+Initialize a package file.
 
-Create `index.md` in the `src` folder.
+```bash
+npm init -y
+```
+
+Install eleventy.
+
+```bash
+npm install @11ty/eleventy
+```
+
+Create a markdown file `index.md` in the `src` folder.
 
 ```md
 Hello world
 ```
 
-Serve the website with `npx eleventy -serve`.
+Serve the website.
 
-Out of convenience include the command in one of the script in the package file.
+```bash
+npx eleventy --serve
+```
+
+> 11ty will set up a local environment on localhost:8080
+
+Out of convenience include the command in one of the scripts from the package file.
 
 ```json
 {
@@ -182,10 +65,219 @@ Out of convenience include the command in one of the script in the package file.
 }
 ```
 
-The page is served on `localhost:8080`.
+Serve the website.
 
-## Lesson 1: Intro
+```bash
+# npx eleventy -serve
+npm run start
+```
 
-In the `src` folder add the assets provided [in the course](https://learneleventyfromscratch.com/lesson/1.html#getting-some-starter-files).
+## Lesson 3: Nunjucks basics
 
-In `.gitignore` list a series of files and folders which are beyond the scope of the git flow.
+Nunjucks is a _templating language_ to create markup files with markup syntax and logic — think variables, loops.
+
+Add the `njk` extension to the eleventy config file so that `.html` files are processed with Nunjucks.
+
+```js
+return {
+  markdownTemplateEngine: "njk",
+  dataTemplateEngine: "njk",
+  htmlTemplateEngine: "njk",
+
+  // ...
+};
+```
+
+Create a folder for layout files in `_includes/layouts`.
+
+In the `layouts` folder create a base layout `base.html` with the skeleton of an HTML page — the initial structure is produced with Emmet and the `!` abbreviation.
+
+In the `<title>` element inject the value of a `title` variable.
+
+```njk
+<title>{{ title }}</title>
+```
+
+In the `<body>` element inject the content in a _block_.
+
+```njk
+<body>
+  {% block content %}
+  {% endblock %}
+</body>
+```
+
+---
+
+Nunjucks' block works as a placeholder. In the file using the base layout you include the content wrapping the markup in a similar block.
+
+```njk
+{% block content %}
+  <h1>Hello world</h1>
+{% endblock %}
+```
+
+With the snippet the heading would replace the block placeholder.
+
+```html
+<body>
+  <h1>Hello world</h1>
+</body>
+```
+
+---
+
+Create a separate layout file in `home.html` which extends the base layout.
+
+```html
+{% extends "layouts/base.html" %}
+```
+
+Add a specific markup structure in the placeholder block.
+
+```html
+{% block content %}
+<article>
+  <h1>{{ title }}</h1>
+
+  {{ content | safe }}
+</article>
+{% endblock %}
+```
+
+---
+
+In the context of markdown documents `content` refers to the text beyond the front matter.
+
+```md
+---
+title: "Hello world"
+---
+
+This is the content...
+```
+
+`safe` is a Nunjucks' _filter_ to automatically escape the input.
+
+11ty produces markup from the markdown file, which is then included as-is.
+
+```html
+<p>This is the content...</p>
+```
+
+Without the filter the page would render the entire string, including the HTML tags.
+
+---
+
+Update `index.md` to define the `title` variable in the front matter and reference the layout file.
+
+```md
+---
+title: "Hello world"
+layout: "layouts/home.html"
+---
+
+This is pretty _rad_, right?
+```
+
+The index file uses the home layout, the home layout extends the base layout. The result is that 11ty creates an `.html` page injecting the variable and content.
+
+## Lesson 4: Front matter basics
+
+Front matter is how you define variables in markdown documents. The syntax follows the YAML language including the variables with key value pairs in between `---` dashes.
+
+```md
+---
+title: "Hello world"
+layout: "layouts/home.html"
+---
+```
+
+Update `index.md` to define `intro` with several fields such as `eyebrow` and `main`.
+
+```md
+---
+intro:
+  eyebrow: "Digital Marketing is our"
+  main: "Bread & Butter"
+---
+```
+
+Update the home layout `home.html` to inject the values as if `intro` were a JavaScript object.
+
+```njk
+<h1>
+  {{ intro.eyebrow }} <em>{{ intro.main }}</em>
+</h1>
+```
+
+> the elements in `home.html` include several classes later useful to style the website with CSS
+
+## Lesson 5: Passthrough basics
+
+_Passthrough_ is how you let 11ty know to copy assets in the output folder — `dist`. The feature is useful for static images and stylesheet files, which need to be included as-is.
+
+Update the eleventy config file to keep the images in `src/images`.
+
+```js
+config.addPassthroughCopy("./src/images/");
+```
+
+> the image in the home layout is displayed instead of the alt text describing the missing asset
+
+## Lesson 6: Partials basics
+
+_Partials_ are fragments, additional `.html` files, in which to split the codebase.
+
+Update the base layout `base.html` to wrap the content in a `<main>` element.
+
+```njk
+<main tabindex="-1" id="main-content">
+  {% block content %}
+  {% endblock %}
+</main>
+```
+
+---
+
+`tabindex` and the specific `id` attribute help to improve the accessibility of the website.
+
+The idea is to remove the container from keyboard navigation, through `tabindex` set to -1, but reachable with an anchor link pointing to the specific `id`.
+
+```html
+<a href="#main-content">Skip to content</a>
+```
+
+With the link you allow readers to skip previous landmarks and reach the content immediately.
+
+---
+
+Create a folder for partial files in `_includes/partials`.
+
+Create a partial `site-head.html` with a `<header>` wrapping around a company logo and basic navigation.
+
+---
+
+The `<header>` element in the partial has a role of `banner` to improve accessibility.
+
+---
+
+Include the partial in the layout file `base.html`, before the `<main>` container.
+
+```html
+{% include "partials/site-head.html" %}
+
+<main tabindex="-1" id="main-content"></main>
+```
+
+In `site.head.html` notice the partial referencing a vector graphic. This is because partials are not constrained to `.html` documents.
+
+```html
+{% include "partials/brand.svg" %}
+```
+
+---
+
+The vector graphic `brand.svg` has an `aria-hidden` and `focusable` attribute to improve accessibility. The graphic is treated as purely decorative
+
+---

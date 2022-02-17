@@ -1,22 +1,530 @@
 # eleventy-from-scratch
 
-With this repository I set out to learn [11ty](https://www.11ty.dev/) following the guidance of [Andy Bell](https://twitter.com/piccalilli_) and his course [Learn Eleventy From Scratch](https://learneleventyfromscratch.com).
+[Andy Bell](https://twitter.com/hankchizljaw) teaches [11ty](https://www.11ty.dev/) with the course [Learn Eleventy From Scratch](https://learneleventyfromscratch.com).
 
-There are approximately 30 lessons, to which I dedicate individual branches.
+This repository builds toward [the final website](https://issue33.com/) following the course lesson by lesson, branch by branch.
+
+## Lesson 1: Intro
+
+[Download the starter files](https://piccalilli.s3.eu-west-2.amazonaws.com/eleventy-from-scratch/eleventy-from-scratch-starter-files.zip) and extract the `src` folder in the local directory.
+
+Add a `.gitignore` file to remove a series of files and folders from the git control.
+
+## Lesson 2: Hello world
+
+Create `.eleventy.js` as a configuration file.
+
+In `.eleventy.js` describe the folders used by the utility.
+
+```js
+module.exports = (config) => {
+  return {
+    dir: {
+      input: "src",
+      output: "dist",
+    },
+  };
+};
+```
+
+> 11ty will consider the files in the `src` folder, produce the website in a `dist` folder.
+
+Initialize a package file.
+
+```bash
+npm init -y
+```
+
+Install eleventy.
+
+```bash
+npm install @11ty/eleventy
+```
+
+Create a markdown file `index.md` in the `src` folder.
+
+```md
+Hello world
+```
+
+Serve the website.
+
+```bash
+npx eleventy --serve
+```
+
+> 11ty will set up a local environment on localhost:8080
+
+Out of convenience include the command in one of the scripts from the package file.
+
+```json
+{
+  "scripts": {
+    "start": "npx eleventy --serve"
+  }
+}
+```
+
+Serve the website.
+
+```bash
+# npx eleventy -serve
+npm run start
+```
+
+## Lesson 3: Nunjucks basics
+
+Nunjucks is a _templating language_ to create markup files with markup syntax and logic — think variables, loops.
+
+Add the `njk` extension to the eleventy config file so that `.html` files are processed with Nunjucks.
+
+```js
+return {
+  markdownTemplateEngine: "njk",
+  dataTemplateEngine: "njk",
+  htmlTemplateEngine: "njk",
+
+  // ...
+};
+```
+
+Create a folder for layout files in `_includes/layouts`.
+
+In the `layouts` folder create a base layout `base.html` with the skeleton of an HTML page — the initial structure is produced with Emmet and the `!` abbreviation.
+
+In the `<title>` element inject the value of a `title` variable.
+
+```njk
+<title>{{ title }}</title>
+```
+
+In the `<body>` element inject the content in a _block_.
+
+```njk
+<body>
+  {% block content %}
+  {% endblock %}
+</body>
+```
+
+---
+
+Nunjucks' block works as a placeholder. In the file using the base layout you include the content wrapping the markup in a similar block.
+
+```njk
+{% block content %}
+  <h1>Hello world</h1>
+{% endblock %}
+```
+
+With the snippet the heading would replace the block placeholder.
+
+```html
+<body>
+  <h1>Hello world</h1>
+</body>
+```
+
+---
+
+Create a separate layout file in `home.html` which extends the base layout.
+
+```html
+{% extends "layouts/base.html" %}
+```
+
+Add a specific markup structure in the placeholder block.
+
+```html
+{% block content %}
+<article>
+  <h1>{{ title }}</h1>
+
+  {{ content | safe }}
+</article>
+{% endblock %}
+```
+
+---
+
+In the context of markdown documents `content` refers to the text beyond the front matter.
+
+```md
+---
+title: "Hello world"
+---
+
+This is the content...
+```
+
+`safe` is a Nunjucks' _filter_ to automatically escape the input.
+
+11ty produces markup from the markdown file, which is then included as-is.
+
+```html
+<p>This is the content...</p>
+```
+
+Without the filter the page would render the entire string, including the HTML tags.
+
+---
+
+Update `index.md` to define the `title` variable in the front matter and reference the layout file.
+
+```md
+---
+title: "Hello world"
+layout: "layouts/home.html"
+---
+
+This is pretty _rad_, right?
+```
+
+The index file uses the home layout, the home layout extends the base layout. The result is that 11ty creates an `.html` page injecting the variable and content.
+
+## Lesson 4: Front matter basics
+
+Front matter is how you define variables in markdown documents. The syntax follows the YAML language including the variables with key value pairs in between `---` dashes.
+
+```md
+---
+title: "Hello world"
+layout: "layouts/home.html"
+---
+```
+
+Update `index.md` to define `intro` with several fields such as `eyebrow` and `main`.
+
+```md
+---
+intro:
+  eyebrow: "Digital Marketing is our"
+  main: "Bread & Butter"
+---
+```
+
+Update the home layout `home.html` to inject the values as if `intro` were a JavaScript object.
+
+```njk
+<h1>
+  {{ intro.eyebrow }} <em>{{ intro.main }}</em>
+</h1>
+```
+
+> the elements in `home.html` include several classes later useful to style the website with CSS
+
+## Lesson 5: Passthrough basics
+
+_Passthrough_ is how you let 11ty know to copy assets in the output folder — `dist`. The feature is useful for static images and stylesheet files, which need to be included as-is.
+
+Update the eleventy config file to keep the images in `src/images`.
+
+```js
+config.addPassthroughCopy("./src/images/");
+```
+
+> the image in the home layout is displayed instead of the alt text describing the missing asset
+
+## Lesson 6: Partials basics
+
+_Partials_ are fragments, additional `.html` files, in which to split the codebase.
+
+Update the base layout `base.html` to wrap the content in a `<main>` element.
+
+```njk
+<main tabindex="-1" id="main-content">
+  {% block content %}
+  {% endblock %}
+</main>
+```
+
+---
+
+`tabindex` and the specific `id` attribute help to improve the accessibility of the website.
+
+The idea is to remove the container from keyboard navigation, through `tabindex` set to -1, but reachable with an anchor link pointing to the specific `id`.
+
+```html
+<a href="#main-content">Skip to content</a>
+```
+
+With the link you allow readers to skip previous landmarks and reach the content immediately.
+
+---
+
+Create a folder for partial files in `_includes/partials`.
+
+Create a partial `site-head.html` with a `<header>` wrapping around a company logo and basic navigation.
+
+---
+
+The `<header>` element in the partial has a role of `banner` to improve accessibility.
+
+---
+
+Include the partial in the layout file `base.html`, before the `<main>` container.
+
+```html
+{% include "partials/site-head.html" %}
+
+<main tabindex="-1" id="main-content"></main>
+```
+
+In `site.head.html` notice the partial referencing a vector graphic. This is because partials are not constrained to `.html` documents.
+
+```html
+{% include "partials/brand.svg" %}
+```
+
+---
+
+The vector graphic `brand.svg` has an `aria-hidden` and `focusable` attribute to improve accessibility. The graphic is treated as purely decorative
+
+---
+
+## Lesson 7: Data basics
+
+Eleventy works with a _global data system_.
+
+Create a folder in `src/_data`.
+
+Create a data file `site.json`.
+
+```json
+{
+  "name": "Issue 33",
+  "url": "https://issue33.com"
+}
+```
+
+11ty makes the information available anywhere in the repository through the name of the file: `site.name`, `site.url`.
+
+Update `site-head.html` to replace the hard-coded name of the website with the value of the variable.
+
+```diff
+-<a aria-label="Issue 33 - home"></a>
++<a aria-label="{{ site.name }} - home"></a>
+```
+
+Create `navigation.json` with an array of items.
+
+```json
+{
+  "items": [
+    {
+      "text": "Home",
+      "url": "/"
+    }
+    // {...}
+  ]
+}
+```
+
+Update `site.head` to loop through the structure with a `for` statement.
+
+```njk
+{% for item in navigation.items %}
+  <li>
+    <a href="{{ item.url }}">{{ item.text }}</a>
+  </li>
+{% endfor %}
+```
+
+Nunjucks loops through the collection to produce a list item for each link.
+
+Data is not limited to JSON files. Through JavaScript 11ty allows to export values such as helper functions.
+
+In the data folder create `helpers.js` and export an object with a `getLinkActiveState` function.
+
+```js
+module.exports = {
+  getLinkActiveState(itemUrl, pageUrl) {},
+};
+```
+
+For the specific function return a string with a specific `aria-` and `data-` attribute if the url of the item matches the url of the page.
+
+Use the function directly in the markup.
+
+```njk
+<a
+  href="{{ item.url }}"
+  {{ helpers.getLinkActiveState(item.url, page.url) |  safe }}>
+  {{item.text}}
+</a>
+```
+
+`page` is available as a global variable and refers to the current page.
+
+---
+
+The `aria-current` attribute is set to `page` for the anchor link matching the current page to improve accessibility.
+
+---
+
+To reiterate the data system create a data file in `cta.json` with fields such as `title` and `summary`.
+
+```json
+{
+  "title": "Get in touch if we seem like a good fit",
+  "summary": ""
+}
+```
+
+Create a partial `cta.html` using the information set on a separate variable, `ctaPrefix`
+
+```njk
+<h2>{{ ctaPrefix.title }}</h2>
+```
+
+The idea is to use `ctaPrefix` with the data from the JSON file _or_ the information passed through a separate variable.
+
+```njk
+{% set ctaPrefix = cta %}
+
+{% if ctaContent %}
+  {% set ctaPrefix = ctaContent %}
+{% endif %}
+```
+
+Update `home.html` to include two call to actions after the `<article>` element, one with the default data, one with a title and content set through the markdown file.
+
+```njk
+{% set ctaContent = primaryCTA %}
+{% include "partials/cta.html" %}
+
+{% set ctaContent = cta %}
+{% include "partials/cta.html" %}
+```
+
+Update `index.md` to define the variables for the non-default call to action.
+
+```md
+---
+primaryCTA:
+  title: "This is an agency that doesn’t actually exist"
+  summary: "This is ..."
+---
+```
+
+## Lesson 8: Creating our first collection
+
+_Collections_ are how eleventy provides groups of content. The utility creates a few collections automatically, but it is possible to create your own.
+
+The goal is to create a collection for work items, for the markdown files in the `src/work` folder.
+
+In `.eleventy.js` add the collection before the `return` statement.
+
+```js
+config.addCollection("work", (collection) => {});
+```
+
+`addCollection` receives the name of the collection and a callback function which describes the collection itself.
+
+To retrieve a reference to files in the `src` folder use the `getFilteredByGlob` method.
+
+```js
+const workItems = collection.getFilteredByGlob("./src/work/*.md");
+console.log(workItems);
+```
+
+The function returns an array in which each file is described by an object with a series of keys.
+
+```js
+/*
+inputPath: './src/work/travel-today.md',
+fileSlug: 'travel-today',
+filePathStem: '/work/travel-today',
+data: {
+    pkg: [Object],
+    title: 'Travel Today',
+    summary: 'A travel website to help make booking easier.',
+    displayOrder: 5,
+}
+*/
+```
+
+Among the keys `data` describes the front matter.
+
+Sort the collection by the value of `displayOrder`.
+
+```js
+return collection
+  .getFilteredByGlob("./src/work/*.md")
+  .sort((a, b) =>
+    Number(a.data.displayOrder) > Number(b.data.displayOrder) ? 1 : -1
+  );
+```
+
+Once added to the `config` object 11ty makes the data available through the `collections` variable.
+
+```html
+<p>There are {{collections.work.length}} items in the work collection</p>
+```
+
+Create a separate collection for featured work items, filtering the markdown files through the `featured` key.
+
+```js
+config.addCollection("featuredWork", (collection) => {
+  return (
+    collection
+      // get and sort
+      .filter((d) => d.data.featured)
+  );
+});
+```
+
+Since the two collections share the sorting by `displayOrder` create a folder for utility functions in `src/utils`.
+
+Create and export a function in `sort-by-display-order.js`.
+
+```js
+module.exports = (collection) =>
+  collection.sort((a, b) =>
+    Number(a.data.displayOrder) > Number(b.data.displayOrder) ? 1 : -1
+  );
+```
+
+Import the function in the configuration file and use it for both collections.
+
+```js
+const sortByDisplayOrder = require("./src/utils/sort-by-display-order");
+
+// config
+return sortByDisplayOrder(collection.getFilteredByGlob("./src/work/*.md"));
+```
+
+To use the collection create a partial in `featured-work.html`.
+
+```njk
+{% for item in collections.featuredWork %}
+  <a href="{{ item.url }}"></a>
+{% endfor %}
+```
+
+Include the partial in the `home.html` between the call to actions.
+
+```njk
+{% include "partials/featured-work.html" %}
+```
 
 ## Lesson 9: Adding remote data
 
-Using data from a remote source allows 11ty to function as a front-end for a content management system.
+Using data from a remote source allows 11ty to function as the front-end for a content management system.
 
 The course provides data in the form of a JSON object with an array images following a specific URL: `https://11ty-from-scratch-content-feeds.piccalil.li/media.json`.
 
 Install `node-fetch` to fetch the data.
 
-_Aside_: at the time of writing installing the latest version of package raises an error. Install a `2.*.*` version to keep using the `require` keyword.
-
 ```bash
 npm i node-fetch@2.6.7
 ```
+
+---
+
+Install version `2.*.*` to keep using the `require` keyword used in the project.
+
+---
 
 In the `_data` folder create `studio.js` to retrieve the data with the `fetch` method.
 
@@ -42,9 +550,9 @@ module.exports = async () => {
 
 In the catch block return an empty array as a fallback value.
 
-The data is available like the other files in the same folder.
+The data is available like the other files in the same folder, through a `studio` variable.
 
-```html
+```njk
 <p>There are {{ studio.length }} items in the remote collection</p>
 ```
 
@@ -56,7 +564,7 @@ Uninstall `node-fetch`.
 npm uninstall node-fetch
 ```
 
-Install the chosen library.
+Install a different library provided by 11ty to cache the assets.
 
 ```bash
 npm install @11ty/eleventy-cache-assets
@@ -77,17 +585,19 @@ const { items } = await Cache(
 );
 ```
 
-Create a partial in `studio-feed.html` to loop through the images if available.
+In both instances 11ty creates a `studio` variable with the array of images.
 
-```html
+Create a partial `studio-feed.html` to loop through the images, if any.
+
+```njk
 {% if studio.length %}
-<!-- for item in studio -->
+  <!-- for item in studio -->
 {% endif %}
 ```
 
-Include the partial in the home layout after the featured work.
+Include the partial in `home.html` after the featured work.
 
-```html
+```njk
 {% include "partials/studio-feed.html" %}
 ```
 
@@ -99,372 +609,3 @@ studioFeed:
   title: "From inside the studio"
 ---
 ```
-
-## Lesson 8: Creating our first collection
-
-Collections work as groups of content. 11ty provides collections automatically, but it is possible to create your own.
-
-In the config file `.eleventy.js` add a collection before the `return` statement.
-
-```js
-config.addCollection("work", (collection) => {});
-```
-
-`addCollection` receives the name of the collection and a callback function which describes the collection itself.
-
-To retrieve a reference to the markdown files use the `getFilteredByGlob` method.
-
-```js
-return collection.getFilteredByGlob("./src/work/*.md");
-```
-
-The function returns an array which is sorted by `displayOrder` a value decribed in the front matter. The front matter is made available in a `data` property for each imported file.
-
-```js
-return collection
-  .getFilteredByGlob("./src/work/*.md")
-  .sort((a, b) =>
-    Number(a.data.displayOrder) > Number(b.data.displayOrder) ? 1 : -1
-  );
-```
-
-The collection is made available to templating languages through `collections`.
-
-```html
-<p>There are {{collections.work.length}} items in the work collection</p>
-```
-
-Create a separate collection for _featured_ work, filtering the markdown files through the `featured` key in the front matter.
-
-```js
-config.addCollection("featuredWork", (collection) => {
-  return (
-    collection
-      // get and sort
-      .filter((d) => d.data.featured)
-  );
-});
-```
-
-Since the two collections share the sorting by `displayOrder` create and export a utility function in `src/utils/sort-by-display-order.js`.
-
-```js
-module.exports = (collection) =>
-  collection.sort((a, b) =>
-    Number(a.data.displayOrder) > Number(b.data.displayOrder) ? 1 : -1
-  );
-```
-
-Import the function in the config file and use it for both collections.
-
-```js
-const sortByDisplayOrder = require("./src/utils/sort-by-display-order");
-
-// config
-return sortByDisplayOrder(collection.getFilteredByGlob("./src/work/*.md"));
-```
-
-To use the collection create a partial in `featured-work.html`.
-
-```html
-{% for item in collections.featuredWork %}
-<a href="{{ item.url }}">
-  <!--  -->
-</a>
-{% endfor %}
-```
-
-Include the partial in the home layout between the call to action partials.
-
-```html
-{% include "partials/featured-work.html" %}
-```
-
-## Lesson 7: Data basics
-
-Eleventy works with a _global data system_.
-
-Create a folder in `_data`.
-
-Create a data file in `site.json`.
-
-```json
-{
-  "name": "Issue 33",
-  "url": "https://issue33.com"
-}
-```
-
-11ty makes the information available in any templating file.
-
-```html
-<a href="/" aria-label="{{ site.name }} - home"></a>
-```
-
-With a more complex structure create `navigation.json` with an array of items.
-
-```json
-{
-  "items": [
-    {
-      "text": "Home",
-      "url": "/"
-    }
-    // {...}
-  ]
-}
-```
-
-Loop through the structure with a `{% for %}` statement.
-
-```html
-{% for item in navigation.items %}
-<li>
-  <a href="{{item.url}}">{{item.text}}</a>
-</li>
-{% endfor %}
-```
-
-Data is not limited to JSON files. With JavaScript syntax export values such as helper functions.
-
-In `helpers.js` export an object with a `getLinkActiveState` function.
-
-```js
-module.exports = {
-  getLinkActiveState(itemUrl, pageUrl) {},
-};
-```
-
-For the specific function return a string with specific `aria-` and `data-` attribute if the url of the item matches the url of the page.
-
-Use the function directly in the markup.
-
-```html
-<a href="{{item.url}}" {{helpers.getLinkActiveState(item.url, page.url)}}> </a>
-```
-
-11ty provides `page` as global data.
-
-_Aside_: the `aria-current` attribute is set to `page` for the anchor link matching the current page to improve accessibility
-
-A call to action helps to reiterate the lessons included so far:
-
-- create a data file in `cta.json` with fields such as `title` and `summary`
-
-- create a partial in `cta.html` using the information set on a separate variable, `ctaPrefix`
-
-  ```html
-  <h2>{{ ctaPrefix.title }}</h2>
-  ```
-
-  The idea is to use `ctaPrefix` with the data from the JSON file _or_ the information passed through a separate variable.
-
-  ```html
-  {% set ctaPrefix = cta %} {% if ctaContent %} {% set ctaPrefix = ctaContent %}
-  {% endif %}
-  ```
-
-- use the partial in `home.html` in two instances, setting `ctaContent` to a separate variable and then to the data in the JSON object
-
-  ```html
-  {% set ctaContent = primaryCTA %} {% include "partials/cta.html" %}
-  <!--  -->
-  {% set ctaContent = cta %} {% include "partials/cta.html" %}
-  ```
-
-- in `index.md` define the `primaryCTA` variable
-
-  ```md
-  ---
-  <!-- ... -->
-  primaryCTA:
-    title: "This is an agency that doesn’t actually exist"
-    summary: "This is ..."
-  ---
-  ```
-
-## Lesson 6: Partials basics
-
-Partials are fragments in which to split the codebase.
-
-Create a folder for partial files in `_includes/partials`.
-
-Create a partial in `site-head.html` with a `<header>` wrapping around a company logo and basic navigation.
-
-Include the partial in any templating file, such as `base.html`.
-
-```html
-{% include "partials/site-head.html" %}
-```
-
-Partials are not constrained to `.html` documents. It is possible to include any other format such as `.svg` for a company logo.
-
-```html
-{% include "partials/brand.svg" %}
-```
-
-_Aside_:
-
-- the `.svg` logo has an `aria-hidden` and `focusable` attribute to improve accessibility. The graphic is treated as purely decorative
-
-- `base.html` injects the block content in a `<main>` container with a `tabindex` and `id` attribute. The landmark can be focused with an anchor link pointing to the identifier
-
-- the `<header>` element in the partial has a role of `banner` to improve accessibility
-
-## Lesson 5: Passthrough basics
-
-Passthrough is how you let 11ty know to copy assets in the output folder. The feature is useful for static images and stylesheet files, included as-is.
-
-Update the eleventy config file to keep the images in `src/images`.
-
-```js
-config.addPassthroughCopy("./src/images/");
-```
-
-## Lesson 4: Front matter basics
-
-Front matter is how you define variables in markdown documents. The syntax follows the YAML language including the variables with key value pairs in between `---` dashes.
-
-Update `index.md` to include an `intro` with several fields such as `main` and `summary`.
-
-```md
----
-intro:
-  main: "Bread & Butter"
-  summary: "..."
----
-```
-
-Inject the values as if `intro` were an object.
-
-```html
-<p>{{ intro.summary }}</p>
-```
-
-## Lesson 3: Nunjucks basics
-
-Nunjucks refers to a _templating language_ to create markup with logic — consider variables and loops.
-
-Add the `njk` extension to the eleventy config file.
-
-```js
-return {
-  markdownTemplateEngine: "njk",
-  dataTemplateEngine: "njk",
-  htmlTemplateEngine: "njk",
-  // dir
-};
-```
-
-The configuration allows to include Nunjucks syntax in `.html` documents.
-
-Create a folder for layout files in `_includes/layouts`.
-
-Create a base layout in `base.html` with the skeleton of an HTML page — the initial structure is produced with Emmet and the `!` abbreviation.
-
-In the `<title>` element inject the value of a `title` variable.
-
-```html
-<title>{{ title }}</title>
-```
-
-In the `<body>` element inject the content provided by a _block_.
-
-```html
-<body>
-  {% block content %}{% endblock %}
-</body>
-```
-
-The block works as a placeholder for any time of content using the layout.
-
-```html
-{% block content %}
-<h1>Hello world</h1>
-{% endblock %}
-```
-
-With the snippet the heading would replace the block placeholder.
-
-Create a separate layout file in `home.html` which extends from the base layout.
-
-```html
-{% extends "layouts/base.html" %}
-```
-
-Add a specific markup structure in the placeholder block.
-
-```html
-{% block content %}
-<article>
-  <h1>{{ title }}</h1>
-  {{ content | safe }}
-</article>
-{% endblock %}
-```
-
-In the context of markdown documents `content` refers to the text beyond the front matter. `safe` is a _filter_ to automatically escape the input.
-
-Update `index.md` to define the `title` variable in the front matter and reference the layout file.
-
-```md
----
-title: "Hello world"
-layout: "layouts/home.html"
----
-
-This is pretty _rad_, right?
-```
-
-The index file uses the home layout, the home layout extends the base layout. The end result is that 11ty creates an `.html` page with the variable and content.
-
-_Aside:_ without the `safe` flag the content would include the HTML tags associated with the markdown file.
-
-```html
-<p>This is pretty <em>rad</em>, right?</p>
-```
-
-## Lesson 2: Hello world
-
-Create `.eleventy.js` as a configuration file. Describe the input and output folders for the utility.
-
-```js
-module.exports = (config) => {
-  return {
-    dir: {
-      input: "src",
-      output: "dist",
-    },
-  };
-};
-```
-
-Initialize a package file with `npm init -y`.
-
-Install eleventy with `npm install @11ty/eleventy`.
-
-Create `index.md` in the `src` folder.
-
-```md
-Hello world
-```
-
-Serve the website with `npx eleventy -serve`.
-
-Out of convenience include the command in one of the script in the package file.
-
-```json
-{
-  "scripts": {
-    "start": "npx eleventy --serve"
-  }
-}
-```
-
-The page is served on `localhost:8080`.
-
-## Lesson 1: Intro
-
-In the `src` folder add the assets provided [in the course](https://learneleventyfromscratch.com/lesson/1.html#getting-some-starter-files).
-
-In `.gitignore` list a series of files and folders which are beyond the scope of the git flow.

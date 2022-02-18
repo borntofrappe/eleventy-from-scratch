@@ -4,9 +4,17 @@
 
 This repository builds toward [the final website](https://issue33.com/) following the course lesson by lesson, branch by branch.
 
+## Lesson 1: Intro
+
+[Download the starter files](https://piccalilli.s3.eu-west-2.amazonaws.com/eleventy-from-scratch/eleventy-from-scratch-starter-files.zip) and extract the `src` folder in the local directory.
+
+Add a `.gitignore` file to remove a series of files and folders from the git control.
+
 ## Lesson 2: Hello world
 
-Create `.eleventy.js` as a configuration file. Describe the input and output folders for the utility.
+Create `.eleventy.js` as a configuration file.
+
+In `.eleventy.js` describe the folders used by the utility.
 
 ```js
 module.exports = (config) => {
@@ -19,19 +27,35 @@ module.exports = (config) => {
 };
 ```
 
-Initialize a package file with `npm init -y`.
+> 11ty will consider the files in the `src` folder, produce the website in a `dist` folder.
 
-Install eleventy with `npm install @11ty/eleventy`.
+Initialize a package file.
 
-Create `index.md` in the `src` folder.
+```bash
+npm init -y
+```
+
+Install eleventy.
+
+```bash
+npm install @11ty/eleventy
+```
+
+Create a markdown file `index.md` in the `src` folder.
 
 ```md
 Hello world
 ```
 
-Serve the website with `npx eleventy -serve`.
+Serve the website.
 
-Out of convenience include the command in one of the script in the package file.
+```bash
+npx eleventy --serve
+```
+
+> 11ty will set up a local environment on localhost:8080
+
+Out of convenience include the command in one of the scripts from the package file.
 
 ```json
 {
@@ -41,10 +65,9 @@ Out of convenience include the command in one of the script in the package file.
 }
 ```
 
-The page is served on `localhost:8080`.
+Serve the website.
 
-## Lesson 1: Intro
-
-[Download the starter files](https://piccalilli.s3.eu-west-2.amazonaws.com/eleventy-from-scratch/eleventy-from-scratch-starter-files.zip) and extract the `src` folder in the local directory.
-
-Add a `.gitignore` file to remove a series of files and folders from the git control.
+```bash
+# npx eleventy -serve
+npm run start
+```

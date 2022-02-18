@@ -1,8 +1,8 @@
 # eleventy-from-scratch
 
-With this repository I set out to learn [11ty](https://www.11ty.dev/) following the guidance of [Andy Bell](https://twitter.com/piccalilli_) and his course [Learn Eleventy From Scratch](https://learneleventyfromscratch.com).
+[Andy Bell](https://twitter.com/hankchizljaw) teaches [11ty](https://www.11ty.dev/) with the course [Learn Eleventy From Scratch](https://learneleventyfromscratch.com).
 
-There are approximately 30 lessons, to which I dedicate individual branches.
+This repository builds toward [the final website](https://issue33.com/) following the course lesson by lesson, branch by branch.
 
 ## Lesson 2: Hello world
 
@@ -45,6 +45,6 @@ The page is served on `localhost:8080`.
 
 ## Lesson 1: Intro
 
-In the `src` folder add the assets provided [in the course](https://learneleventyfromscratch.com/lesson/1.html#getting-some-starter-files).
+[Download the starter files](https://piccalilli.s3.eu-west-2.amazonaws.com/eleventy-from-scratch/eleventy-from-scratch-starter-files.zip) and extract the `src` folder in the local directory.
 
-In `.gitignore` list a series of files and folders which are beyond the scope of the git flow.
+Add a `.gitignore` file to remove a series of files and folders from the git control.

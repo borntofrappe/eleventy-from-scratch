@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="alternate" type="application/rss+xml" href="{{ site.url }}/feed.xml" />
-    {% include "partials/meta-info.html" %}
-  </head>
-  <body>
-    {% include "partials/site-head.html" %}
-    <main tabindex="-1" id="main-content">
-      {% block content %} {% endblock %}
-    </main>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  {% include "partials/meta-info.html" %}
+  <link rel="alternate" type="application/rss+xml" href="{{ site.url }}/feed.xml" />
+</head>
+<body>
+
+  {% include "partials/site-head.html" %}
+  <main tabindex="-1" id="main-content">
+    {% block content %}
+    {% endblock %}
+  </main>
+</body>
 </html>

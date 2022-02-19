@@ -1,7 +1,7 @@
 const moment = require("moment");
 
 module.exports = (value) => {
-  const date = moment(value);
+  const dateObject = moment(value);
 
-  return `${date.format("Do")} of ${date.format("MMMM YYYY")}`;
+  return `${dateObject.format("Do")} of ${dateObject.format("MMMM YYYY")}`;
 };

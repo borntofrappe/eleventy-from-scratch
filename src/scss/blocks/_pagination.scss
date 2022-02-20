@@ -6,7 +6,7 @@
   }
 
   // Pushes a sole "next" link out to the right
-  &__inner > [data-direction="forwards"] {
+  &__inner > [data-direction='forwards'] {
     margin-inline-start: auto;
   }
 }

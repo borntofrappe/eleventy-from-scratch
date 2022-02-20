@@ -1,8 +1,8 @@
 .intro {
   // Default is a single column layout where the header overlaps the media
   display: grid;
-  grid-template-rows: get-size("700") minmax(0, 1fr) get-size("700") auto;
-  grid-gap: get-size("500");
+  grid-template-rows: get-size('700') minmax(0, 1fr) get-size('700') auto;
+  grid-gap: get-size('500');
 
   // Force items to span 1 column
   > * {
@@ -10,11 +10,11 @@
   }
 
   &__header {
-    padding: get-size("300") get-size("500");
-    background: rgba(get-color("tertiary"), 0.95);
+    padding: get-size('300') get-size('500');
+    background: rgba(get-color('tertiary'), 0.95);
     z-index: 1;
     grid-row: 2;
-    margin: 0 get-size("500"); // Adds a horizontal gutter
+    margin: 0 get-size('500'); // Adds a horizontal gutter
 
     // Prevents it from stretching to fill the space
     align-self: center;
@@ -52,12 +52,12 @@
 
   // Switch to an inline layout with some vert space
   // above the header and content
-  @include media-query("md") {
-    grid-template-rows: get-size("500") auto auto auto;
+  @include media-query('md') {
+    grid-template-rows: get-size('500') auto auto auto;
     grid-template-columns: minmax(15rem, 1fr) 2fr;
 
     &__header {
-      padding: get-size("500");
+      padding: get-size('500');
       margin: 0;
       grid-column: 1/3;
       justify-self: start;
@@ -76,7 +76,7 @@
   }
 
   // Flip the ratio for larger breakpoints
-  @include media-query("lg") {
+  @include media-query('lg') {
     grid-template-columns: 1fr minmax(44rem, 1fr);
 
     // Because it's so large, it make sense to limit the image height too

@@ -1,7 +1,9 @@
 {% extends "layouts/base.html" %}
+
 {% set pageCriticalStyles = ["css/page.css"] %}
 
 {% set pageHeaderTitle = title %}
+
 {% set recommendedPosts = helpers.getSiblingContent(collections.blog, page) %}
 
 {# Render post date and any tags that this post has been filed under #}
@@ -30,7 +32,7 @@
     {% if recommendedPosts %}
       <footer class="recommended-posts">
         {% set postListItems = recommendedPosts %}
-        {% set postListHeadline = "More from the blog" %}
+        {% set postListHeadline = 'More from the blog' %}
         {% include "partials/post-list.html" %}
       </footer>
     {% endif %}

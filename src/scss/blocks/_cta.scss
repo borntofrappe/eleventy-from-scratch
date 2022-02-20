@@ -3,14 +3,14 @@
   ::selection {
     // We set this as an RGBA because that’s how you get a solid color, by using 0.99
     // alpha value. Browsers are wild.
-    background: rgba(get-color("light"), 0.99);
-    color: get-color("dark-shade");
+    background: rgba(get-color('light'), 0.99);
+    color: get-color('dark-shade');
   }
 
-  @include media-query("md") {
+  @include media-query('md') {
     &__inner {
       display: grid;
-      grid-gap: get-size("700") get-size("500");
+      grid-gap: get-size('700') get-size('500');
       grid-template-columns: repeat(12, 1fr);
 
       @supports (display: grid) {
@@ -37,9 +37,9 @@
     }
   }
 
-  @include media-query("lg") {
+  @include media-query('lg') {
     &__inner {
-      grid-gap: get-size("500");
+      grid-gap: get-size('500');
     }
 
     &__summary {

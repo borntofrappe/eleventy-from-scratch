@@ -1,7 +1,7 @@
 ---
-title: 'Issue 33 Blog'
-summary: 'A feed of the latest posts from our blog.'
-permalink: '/feed.xml'
+title: "Issue 33 Blog"
+summary: "A feed of the latest posts from our blog."
+permalink: "/feed.xml"
 ---
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
@@ -9,7 +9,7 @@ permalink: '/feed.xml'
 	<subtitle>{{ summary }}</subtitle>
 	<link href="{{ site.url }}{{ permalink }}" rel="self"/>
 	<link href="{{ site.url }}/"/>
-	<updated>{{ collections.blog | rssLastUpdatedDate }}</updated>
+	<updated>{{ collections.blog | getNewestCollectionItemDate | dateToRfc3339 }}</updated>
 	<id>{{ site.url }}</id>
 	<author>
     <name>{{ site.authorName }}</name>
@@ -20,7 +20,7 @@ permalink: '/feed.xml'
     <entry>
       <title>{{ post.data.title }}</title>
       <link href="{{ absolutePostUrl }}"/>
-      <updated>{{ post.date | rssDate }}</updated>
+      <updated>{{ post.date | dateToRfc3339 }}</updated>
       <id>{{ absolutePostUrl }}</id>
       <content type="html"><![CDATA[
         {{ post.templateContent | safe }}

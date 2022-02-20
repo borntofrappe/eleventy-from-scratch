@@ -8,7 +8,7 @@
     left: -0.25rem;
     width: calc(100% - 0.5rem);
     padding: 0.8rem;
-    background: get-color("quaternary");
+    background: get-color('quaternary');
   }
 
   &__image {
@@ -20,6 +20,6 @@
 
   &__name {
     display: block;
-    font-size: get-size("600");
+    font-size: get-size('600');
   }
 }

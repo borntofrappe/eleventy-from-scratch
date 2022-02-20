@@ -10,4 +10,5 @@ paginationNextText: "Older posts"
 paginationAnchor: "#post-list"
 ---
 
-The latest articles from around the studio, demonstrating our design thinking, strategy and expertise.
+The latest articles from around the studio, demonstrating our design
+thinking, strategy and expertise.

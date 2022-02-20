@@ -8,7 +8,7 @@
       width: 16rem;
       height: 13rem;
       flex-shrink: 0;
-      padding: 0 0 get-size("400") 0;
+      padding: 0 0 get-size('400') 0;
 
       img {
         width: 100%;
@@ -18,11 +18,11 @@
     }
 
     > * + * {
-      margin-inline-start: get-size("500");
+      margin-inline-start: get-size('500');
     }
   }
 
-  @include media-query("md") {
+  @include media-query('md') {
     &__list {
       > * {
         width: 28rem;

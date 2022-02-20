@@ -1,25 +1,23 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/base.html" %} 
+
 {% set pageCriticalStyles = ["css/page.css"] %}
 
-{% set pageHeaderTitle = title %}
-{% set pageHeaderSummary = content %}
-{% set postListItems = pagination.items %}
+{% set pageHeaderTitle = title %} 
+{% set pageHeaderSummary = content %} 
+{% set postListItems = pagination.items %} 
 
 {% if tag %} 
+  {% set pageHeaderTitle = 'Blog posts filed under “' + tag + '”' %} 
   {% set postListItems = collections[tag] %} 
-  {% set pageHeaderTitle = 'Blog posts filed under “' + tag + '”' %}
 {% endif %}
 
 {% block content %}
-  
   <article>
     {% include "partials/page-header.html" %} 
     {% include "partials/post-list.html" %}
-
-    {% if not tag %}
-      {% include "partials/pagination.html" %} 
-    {% endif %}
   </article>
 
-  {% include "partials/cta.html" %}
+  {% if not tag %} 
+    {% include "partials/pagination.html" %} 
+  {% endif %}
 {% endblock %}

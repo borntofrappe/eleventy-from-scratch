@@ -1823,6 +1823,16 @@ As a visual confirmation the console highlights the gains obtained on the differ
 gulp-imagemin: Minified 27 images (saved 1.81 MB - 45.7%)
 ```
 
+---
+
+As images are processed through the gulp task it is no longer necessary to rely on the passthrough feature introduced in [lesson 5](#lesson-5-passthrough-basics).
+
+```diff
+-config.addPassthroughCopy("./src/images/");
+```
+
+---
+
 ## Lesson 22: Global CSS and design tokens
 
 The course focuses on CSS through the [CUBE methodology](https://cube.fyi/).

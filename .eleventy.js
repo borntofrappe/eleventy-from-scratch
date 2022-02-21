@@ -7,9 +7,7 @@ const w3DateFilter = require("./src/filters/w3-date-filter.js");
 
 module.exports = (config) => {
   config.setUseGitIgnore(false);
-
-  config.addPassthroughCopy("./src/images/");
-
+  
   config.addCollection("work", (collection) => {
     return sortByDisplayOrder(collection.getFilteredByGlob("./src/work/*.md"));
   });

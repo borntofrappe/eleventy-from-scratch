@@ -1822,3 +1822,13 @@ As a visual confirmation the console highlights the gains obtained on the differ
 ```text
 gulp-imagemin: Minified 27 images (saved 1.81 MB - 45.7%)
 ```
+
+---
+
+As images are processed through the gulp task it is no longer necessary to rely on the passthrough feature introduced in [lesson 5](#lesson-5-passthrough-basics).
+
+```diff
+-config.addPassthroughCopy("./src/images/");
+```
+
+---
